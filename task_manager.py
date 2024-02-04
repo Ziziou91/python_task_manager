@@ -33,7 +33,7 @@ def write_user_to_file(username_password: dict) -> None:
         out_file.write("\n".join(user_data))    
 
 
-def add_task() -> None:
+def add_task(task_list: list) -> None:
     """Allow a user to add a new task to task.txt file."""
     # TODO - refactor to break out current date and append logic
     task_username = input("Name of person assigned to task: ")
@@ -83,6 +83,19 @@ def write_task_to_file(new_task:dict, task_list: list) -> None:
         task_file.write("\n".join(task_list_to_write))
     print("Task successfully added.")
 
+def view_all(task_list: list) -> None:
+    """Reads tasks from task.txt file and prints all to the console."""
+    # TODO - Improve readability of the print statement with better formatting.
+    for t in task_list:
+        disp_str = f"Task: \t\t {t['title']}\n"
+        disp_str += f"Assigned to: \t {t['username']}\n"
+        disp_str += f"Date Assigned: \t {t['assigned_date'].strftime(DATETIME_STRING_FORMAT)}\n"
+        disp_str += f"Due Date: \t {t['due_date'].strftime(DATETIME_STRING_FORMAT)}\n"
+        disp_str += f"Task Description: \n {t['description']}\n"
+        print(disp_str)
+
+
+# ===================EXECTUION STARTS HERE===================
 
 # Create tasks.txt if it doesn't exist
 if not os.path.exists("tasks.txt"):
@@ -164,23 +177,10 @@ e - Exit
 
 
     elif menu == 'a':
-        add_task()
+        add_task(task_list)
     
     elif menu == 'va':
-        '''Reads the task from task.txt file and prints to the console in the 
-           format of Output 2 presented in the task pdf (i.e. includes spacing
-           and labelling) 
-        '''
-
-        for t in task_list:
-            disp_str = f"Task: \t\t {t['title']}\n"
-            disp_str += f"Assigned to: \t {t['username']}\n"
-            disp_str += f"Date Assigned: \t {t['assigned_date'].strftime(DATETIME_STRING_FORMAT)}\n"
-            disp_str += f"Due Date: \t {t['due_date'].strftime(DATETIME_STRING_FORMAT)}\n"
-            disp_str += f"Task Description: \n {t['description']}\n"
-            print(disp_str)
-            
-
+        view_all(task_list)
 
     elif menu == 'vm':
         '''Reads the task from task.txt file and prints to the console in the 
