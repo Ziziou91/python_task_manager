@@ -13,9 +13,11 @@ DATETIME_STRING_FORMAT = "%Y-%m-%d"
 
 
 def reg_user(username_password: dict) -> None:
-    '''Add a new user to the user.txt file'''
+    """Create a new user to write to the user.txt file"""
     new_username = input("New Username: ")
-    # TODO - Should test if someone with that username already exists.
+    while new_username in username_password:
+        print(f"Error! {new_username} has already been registered. Please choose a different username.")
+        new_username = input("New Username: ")
     new_password = input("New Password: ")
     confirm_password = input("Confirm Password: ")
     if new_password == confirm_password:
@@ -26,6 +28,7 @@ def reg_user(username_password: dict) -> None:
         print("Passwords do no match")
 
 def write_user_to_file(username_password: dict) -> None:
+    """Write new user to user.txt file."""
     with open("user.txt", "w", encoding="UTF-8") as out_file:
         user_data = []
         for k in username_password:
@@ -184,7 +187,7 @@ e - Exit
 : ''').lower()
 
     if menu == 'r':
-        reg_user()
+        reg_user(username_password)
 
     elif menu == 'a':
         add_task(task_list)
