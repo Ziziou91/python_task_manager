@@ -11,6 +11,24 @@ from datetime import datetime, date
 
 DATETIME_STRING_FORMAT = "%Y-%m-%d"
 
+
+def reg_user():
+    '''Add a new user to the user.txt file'''
+    new_username = input("New Username: ")
+    new_password = input("New Password: ")
+    confirm_password = input("Confirm Password: ")
+    if new_password == confirm_password:
+        print("New user added")
+        username_password[new_username] = new_password
+        with open("user.txt", "w", encoding="UTF-8") as out_file:
+            user_data = []
+            for k in username_password:
+                user_data.append(f"{k};{username_password[k]}")
+            out_file.write("\n".join(user_data))
+    else:
+        print("Passwords do no match")
+
+
 # Create tasks.txt if it doesn't exist
 if not os.path.exists("tasks.txt"):
     with open("tasks.txt", "w") as default_file:
@@ -87,31 +105,8 @@ e - Exit
 : ''').lower()
 
     if menu == 'r':
-        '''Add a new user to the user.txt file'''
-        # - Request input of a new username
-        new_username = input("New Username: ")
+        reg_user()
 
-        # - Request input of a new password
-        new_password = input("New Password: ")
-
-        # - Request input of password confirmation.
-        confirm_password = input("Confirm Password: ")
-
-        # - Check if the new password and confirmed password are the same.
-        if new_password == confirm_password:
-            # - If they are the same, add them to the user.txt file,
-            print("New user added")
-            username_password[new_username] = new_password
-            
-            with open("user.txt", "w") as out_file:
-                user_data = []
-                for k in username_password:
-                    user_data.append(f"{k};{username_password[k]}")
-                out_file.write("\n".join(user_data))
-
-        # - Otherwise you present a relevant message.
-        else:
-            print("Passwords do no match")
 
     elif menu == 'a':
         '''Allow a user to add a new task to task.txt file
