@@ -12,7 +12,7 @@ from datetime import datetime, date
 DATETIME_STRING_FORMAT = "%Y-%m-%d"
 
 
-def reg_user() -> None:
+def reg_user(username_password: dict) -> None:
     '''Add a new user to the user.txt file'''
     new_username = input("New Username: ")
     # TODO - Should test if someone with that username already exists.
@@ -93,6 +93,17 @@ def view_all(task_list: list) -> None:
         disp_str += f"Due Date: \t {t['due_date'].strftime(DATETIME_STRING_FORMAT)}\n"
         disp_str += f"Task Description: \n {t['description']}\n"
         print(disp_str)
+
+def view_mine(task_list: list) -> None:
+    """Reads tasks from task.txt file and prints tasks assigned to user."""
+    for t in task_list:
+        if t['username'] == curr_user:
+            disp_str = f"Task: \t\t {t['title']}\n"
+            disp_str += f"Assigned to: \t {t['username']}\n"
+            disp_str += f"Date Assigned: \t {t['assigned_date'].strftime(DATETIME_STRING_FORMAT)}\n"
+            disp_str += f"Due Date: \t {t['due_date'].strftime(DATETIME_STRING_FORMAT)}\n"
+            disp_str += f"Task Description: \n {t['description']}\n"
+            print(disp_str)
 
 
 # ===================EXECTUION STARTS HERE===================
@@ -175,7 +186,6 @@ e - Exit
     if menu == 'r':
         reg_user()
 
-
     elif menu == 'a':
         add_task(task_list)
     
@@ -183,18 +193,7 @@ e - Exit
         view_all(task_list)
 
     elif menu == 'vm':
-        '''Reads the task from task.txt file and prints to the console in the 
-           format of Output 2 presented in the task pdf (i.e. includes spacing
-           and labelling)
-        '''
-        for t in task_list:
-            if t['username'] == curr_user:
-                disp_str = f"Task: \t\t {t['title']}\n"
-                disp_str += f"Assigned to: \t {t['username']}\n"
-                disp_str += f"Date Assigned: \t {t['assigned_date'].strftime(DATETIME_STRING_FORMAT)}\n"
-                disp_str += f"Due Date: \t {t['due_date'].strftime(DATETIME_STRING_FORMAT)}\n"
-                disp_str += f"Task Description: \n {t['description']}\n"
-                print(disp_str)
+        view_mine(task_list)
                 
     
     elif menu == 'ds' and curr_user == 'admin': 
