@@ -21,11 +21,11 @@ def reg_user() -> None:
     if new_password == confirm_password:
         print("New user added")
         username_password[new_username] = new_password
-        write_user(username_password)
+        write_user_to_file(username_password)
     else:
         print("Passwords do no match")
 
-def write_user(username_password: dict) -> None:
+def write_user_to_file(username_password: dict) -> None:
     with open("user.txt", "w", encoding="UTF-8") as out_file:
         user_data = []
         for k in username_password:
@@ -63,7 +63,10 @@ def add_task() -> None:
         "assigned_date": curr_date,
         "completed": False
     }
+    write_task_to_file(new_task, task_list)
 
+def write_task_to_file(new_task:dict, task_list: list) -> None:
+    """Adds new_task to tast_list before writing it to tasks.txt."""
     task_list.append(new_task)
     with open("tasks.txt", "w") as task_file:
         task_list_to_write = []
@@ -79,7 +82,6 @@ def add_task() -> None:
             task_list_to_write.append(";".join(str_attrs))
         task_file.write("\n".join(task_list_to_write))
     print("Task successfully added.")
-            
 
 
 # Create tasks.txt if it doesn't exist
