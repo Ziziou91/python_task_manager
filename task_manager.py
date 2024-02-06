@@ -8,6 +8,9 @@
 #=====importing libraries===========
 import os
 from datetime import datetime, date
+from unit_functions import color, print_line
+from draw_tasks import view_all, view_mine
+
 
 DATETIME_STRING_FORMAT = "%Y-%m-%d"
 
@@ -40,10 +43,9 @@ def add_task(task_list: list) -> None:
     """Allow a user to add a new task to task.txt file."""
     # TODO - refactor to break out current date and append logic
     task_username = input("Name of person assigned to task: ")
-    if task_username not in username_password.keys():
-        # TODO - requires more comprehensive logic.
-        print("User does not exist. Please enter a valid username")
-        # continue
+    while task_username not in username_password:
+        print(f"Error! {task_username} does not exist. Please enter a valid username")
+        task_username = input("Name of person assigned to task: ")
     task_title = input("Title of Task: ")
     task_description = input("Description of Task: ")
     while True:
@@ -54,60 +56,46 @@ def add_task(task_list: list) -> None:
 
         except ValueError:
             print("Invalid datetime format. Please use the format specified")
-    # Then get the current date.
-    curr_date = date.today()
-    ''' Add the data to the file task.txt and
-        Include 'No' to indicate if the task is complete.'''
-    new_task = {
-        "username": task_username,
-        "title": task_title,
-        "description": task_description,
-        "due_date": due_date_time,
-        "assigned_date": curr_date,
-        "completed": False
-    }
+    new_task = create_task(task_username, task_title, task_description, due_date_time, curr_user)
     write_task_to_file(new_task, task_list)
+
+def create_task(task_username: str, task_title: str, task_description: str, due_date_time: datetime, curr_user: str) -> dict:
+    """Creates task dictionary and then returns."""
+    print("curr_user", curr_user)
+    curr_date = date.today()
+    task = {
+    "username": task_username,
+    "title": task_title,
+    "description": task_description,
+    "due_date": due_date_time,
+    "assigned_date": curr_date,
+    "completed": False,
+    "assigned_by": curr_user,
+    "task_id": 000 
+    }
+    return task
 
 def write_task_to_file(new_task:dict, task_list: list) -> None:
     """Adds new_task to tast_list before writing it to tasks.txt."""
     task_list.append(new_task)
     with open("tasks.txt", "w") as task_file:
         task_list_to_write = []
+        task_id = 000
         for t in task_list:
+            task_id += 1
             str_attrs = [
                 t['username'],
                 t['title'],
                 t['description'],
                 t['due_date'].strftime(DATETIME_STRING_FORMAT),
                 t['assigned_date'].strftime(DATETIME_STRING_FORMAT),
-                "Yes" if t['completed'] else "No"
+                "Yes" if t['completed'] else "No",
+                t['assigned_by'],
+                str(task_id)
             ]
             task_list_to_write.append(";".join(str_attrs))
         task_file.write("\n".join(task_list_to_write))
     print("Task successfully added.")
-
-def view_all(task_list: list) -> None:
-    """Reads tasks from task.txt file and prints all to the console."""
-    # TODO - Improve readability of the print statement with better formatting.
-    for t in task_list:
-        disp_str = f"Task: \t\t {t['title']}\n"
-        disp_str += f"Assigned to: \t {t['username']}\n"
-        disp_str += f"Date Assigned: \t {t['assigned_date'].strftime(DATETIME_STRING_FORMAT)}\n"
-        disp_str += f"Due Date: \t {t['due_date'].strftime(DATETIME_STRING_FORMAT)}\n"
-        disp_str += f"Task Description: \n {t['description']}\n"
-        print(disp_str)
-
-def view_mine(task_list: list) -> None:
-    """Reads tasks from task.txt file and prints tasks assigned to user."""
-    for t in task_list:
-        if t['username'] == curr_user:
-            disp_str = f"Task: \t\t {t['title']}\n"
-            disp_str += f"Assigned to: \t {t['username']}\n"
-            disp_str += f"Date Assigned: \t {t['assigned_date'].strftime(DATETIME_STRING_FORMAT)}\n"
-            disp_str += f"Due Date: \t {t['due_date'].strftime(DATETIME_STRING_FORMAT)}\n"
-            disp_str += f"Task Description: \n {t['description']}\n"
-            print(disp_str)
-
 
 # ===================EXECTUION STARTS HERE===================
 
@@ -133,6 +121,8 @@ for t_str in task_data:
     curr_t['due_date'] = datetime.strptime(task_components[3], DATETIME_STRING_FORMAT)
     curr_t['assigned_date'] = datetime.strptime(task_components[4], DATETIME_STRING_FORMAT)
     curr_t['completed'] = True if task_components[5] == "Yes" else False
+    curr_t['assigned_by'] = task_components[6]
+    curr_t['task_id'] = task_components[7]
 
     task_list.append(curr_t)
 
@@ -196,7 +186,7 @@ e - Exit
         view_all(task_list)
 
     elif menu == 'vm':
-        view_mine(task_list)
+        view_mine(task_list, curr_user)
                 
     
     elif menu == 'ds' and curr_user == 'admin': 
