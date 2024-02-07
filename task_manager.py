@@ -7,10 +7,10 @@
 
 #=====importing libraries===========
 import os
+import json
 from datetime import datetime, date
-from unit_functions import color, print_line
+from unit_functions import color, print_line, load_json
 from draw_tasks import view_all, view_mine
-
 
 DATETIME_STRING_FORMAT = "%Y-%m-%d"
 
@@ -38,7 +38,6 @@ def write_user_to_file(username_password: dict) -> None:
             user_data.append(f"{k};{username_password[k]}")
         out_file.write("\n".join(user_data))    
 
-
 def add_task(task_list: list) -> None:
     """Allow a user to add a new task to task.txt file."""
     # TODO - refactor to break out current date and append logic
@@ -57,7 +56,7 @@ def add_task(task_list: list) -> None:
         except ValueError:
             print("Invalid datetime format. Please use the format specified")
     new_task = create_task(task_username, task_title, task_description, due_date_time, curr_user)
-    write_task_to_file(new_task, task_list)
+    write_task_to_file(new_task, tasks)
 
 def create_task(task_username: str, task_title: str, task_description: str, due_date_time: datetime, curr_user: str) -> dict:
     """Creates task dictionary and then returns."""
@@ -67,35 +66,34 @@ def create_task(task_username: str, task_title: str, task_description: str, due_
     "username": task_username,
     "title": task_title,
     "description": task_description,
-    "due_date": due_date_time,
-    "assigned_date": curr_date,
+    "due_date": due_date_time.strftime(DATETIME_STRING_FORMAT),
+    "assigned_date": curr_date.strftime(DATETIME_STRING_FORMAT),
     "completed": False,
     "assigned_by": curr_user,
-    "task_id": 000 
     }
     return task
 
-def write_task_to_file(new_task:dict, task_list: list) -> None:
+def write_task_to_file(new_task:dict, tasks: dict) -> None:
     """Adds new_task to tast_list before writing it to tasks.txt."""
-    task_list.append(new_task)
-    with open("tasks.txt", "w") as task_file:
-        task_list_to_write = []
-        task_id = 000
-        for t in task_list:
-            task_id += 1
-            str_attrs = [
-                t['username'],
-                t['title'],
-                t['description'],
-                t['due_date'].strftime(DATETIME_STRING_FORMAT),
-                t['assigned_date'].strftime(DATETIME_STRING_FORMAT),
-                "Yes" if t['completed'] else "No",
-                t['assigned_by'],
-                str(task_id)
-            ]
-            task_list_to_write.append(";".join(str_attrs))
-        task_file.write("\n".join(task_list_to_write))
+    # Calculate new unique task ID, get list of keys, turn into numbers, find max
+    num_list = [int(value) for value in tasks.keys()]
+    num_list_max = max(num_list)
+    new_id = create_task_id(num_list_max)
+    print("previous max id", num_list_max)
+    print("new id", new_id)
+    tasks[new_id] = new_task
+    # TODO create write_json function, include error handling
+    with open("tasks.json", "w", encoding="UTF-8") as f:
+        json.dump(tasks, f)
     print("Task successfully added.")
+
+def create_task_id(prev_id_int):
+    # TODO - make more readable
+    new_id_int = prev_id_int + 1
+    new_id = str(new_id_int)
+    leading_len = 5 - len(new_id)
+    return f"{(("0" * leading_len) + new_id)}"
+
 
 # ===================EXECTUION STARTS HERE===================
 
@@ -107,6 +105,7 @@ if not os.path.exists("tasks.txt"):
 with open("tasks.txt", 'r') as task_file:
     task_data = task_file.read().split("\n")
     task_data = [t for t in task_data if t != ""]
+
 
 
 task_list = []
@@ -126,6 +125,7 @@ for t_str in task_data:
 
     task_list.append(curr_t)
 
+tasks = load_json("tasks.json")
 
 #====Login Section====
 '''This code reads usernames and password from the user.txt file to 
@@ -183,10 +183,10 @@ e - Exit
         add_task(task_list)
     
     elif menu == 'va':
-        view_all(task_list)
+        view_all(tasks)
 
     elif menu == 'vm':
-        view_mine(task_list, curr_user)
+        view_mine(tasks, curr_user)
                 
     
     elif menu == 'ds' and curr_user == 'admin': 

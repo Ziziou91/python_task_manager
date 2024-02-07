@@ -1,3 +1,5 @@
+import json
+
 class color:
     purple = '\033[95m'
     cyan = '\033[96m'
@@ -15,7 +17,18 @@ def print_line(char="-", count=70) -> None:
     print(f"{char*count}")
 
 def days_hours(td):
-    # {days_left} days, {hours_left} hour
+    # TODO colour depends on how long left to complete the task. Will also add "overdue if negative"
     time_left = f"{abs(td.days)} days, {td.seconds//3600} hours"
     return f"{color.yellow}{time_left}{color.end}"
     
+
+def load_json(file_name: str) -> dict:
+    """Opens and loads a json file then returns."""
+    try:
+        file = open(file_name, "r", encoding="UTF-8")
+    except FileNotFoundError as exc:
+        raise FileNotFoundError(f"Error! {file_name} is an invalid path.") from exc
+    else:
+        with file:
+            data = json.load(file)
+            return data
