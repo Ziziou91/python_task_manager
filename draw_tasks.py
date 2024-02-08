@@ -31,16 +31,19 @@ def create_task_line(title: str, num: int, length: int=70) -> str:
     return f"{title + (" "*spacing) + num_str}\n"
 
 def create_task_str(key: str, task: dict, called_from: str) -> str:
+    """Builds task_str to be printed in the terminal."""
     # TODO - clean up due_date logic.
-    due_date = difference_between_dates(datetime.now().date(),datetime.strptime(task['due_date'], DATETIME_STRING_FORMAT).date())
-    my_str= f"{color.bold}{create_task_line(task['title'], key)}{color.end}"
-    my_str += f"{task['description']}\n\n"
-    my_str += f"{create_task_line(f"Due: {datetime.strptime(task['due_date'], DATETIME_STRING_FORMAT).date()}", due_date, 79)}\n"
+    current_date = datetime.now().date()
+    due_date = datetime.strptime(task['due_date'], DATETIME_STRING_FORMAT).date()
+    days_left = difference_between_dates(current_date, due_date)
+    task_str= f"{color.bold}{create_task_line(task['title'], key)}{color.end}"
+    task_str += f"{task['description']}\n\n"
+    task_str += f"{create_task_line(f"Due: {due_date}", days_left, 79)}\n"
     assigned_by = f"Assigned by: {task['assigned_by']}"
     if called_from == "view_all":
         assigned_to = f"Assigned to: {task['username']}"
-        my_str += f"{create_task_line(assigned_by, assigned_to)}"
+        task_str += f"{create_task_line(assigned_by, assigned_to)}"
     else:
-        my_str += f"{assigned_by}\n"
-    return my_str
+        task_str += f"{assigned_by}\n"
+    return task_str
 
