@@ -75,24 +75,20 @@ def create_task(task_username: str, task_title: str, task_description: str, due_
 
 def write_task_to_file(new_task:dict, tasks: dict) -> None:
     """Adds new_task to tast_list before writing it to tasks.txt."""
-    # Calculate new unique task ID, get list of keys, turn into numbers, find max
-    num_list = [int(value) for value in tasks.keys()]
-    num_list_max = max(num_list)
-    new_id = create_task_id(num_list_max)
-    print("previous max id", num_list_max)
-    print("new id", new_id)
+    new_id = create_task_id(tasks)
     tasks[new_id] = new_task
     # TODO create write_json function, include error handling
     with open("tasks.json", "w", encoding="UTF-8") as f:
         json.dump(tasks, f)
     print("Task successfully added.")
 
-def create_task_id(prev_id_int):
-    # TODO - make more readable
-    new_id_int = prev_id_int + 1
-    new_id = str(new_id_int)
-    leading_len = 5 - len(new_id)
-    return f"{(("0" * leading_len) + new_id)}"
+def create_task_id(tasks: dict) -> str:
+    """Finds highest current task_id, then creates a task_id for new task."""
+    id_list = [int(value) for value in tasks.keys()]
+    id_list_max = max(id_list)
+    new_id = str(id_list_max +1)
+    leading_zero_len = 5 - len(new_id)
+    return f"{(("0" * leading_zero_len) + new_id)}"
 
 
 # ===================EXECTUION STARTS HERE===================

@@ -1,4 +1,5 @@
 import json
+from typing import Any
 
 class color:
     purple = '\033[95m'
@@ -16,11 +17,15 @@ def print_line(char="-", count=70) -> None:
     """Prints a line of characters for formatting in the terminal."""
     print(f"{char*count}")
 
-def days_hours(td):
-    # TODO colour depends on how long left to complete the task. Will also add "overdue if negative"
-    time_left = f"{abs(td.days)} days, {td.seconds//3600} hours"
-    return f"{color.yellow}{time_left}{color.end}"
-    
+def difference_between_dates(current_date, due_date):
+    """Compares current_date and due_date. Returns difference with additional context"""
+    difference = (due_date - current_date)
+    if difference.days > 3:
+        return f"{color.green}{difference.days} days{color.end}"
+    elif difference.days >= 0:
+        return f"{color.yellow}{difference.days} days{color.end}"
+    elif difference.days < 0:
+        return f"{color.red}{difference.days} days overdue{color.end}"
 
 def load_json(file_name: str) -> dict:
     """Opens and loads a json file then returns."""
@@ -32,3 +37,8 @@ def load_json(file_name: str) -> dict:
         with file:
             data = json.load(file)
             return data
+
+def write_json(file_name: str, data: Any) -> None:
+    """Writes data to a json file at file_name."""
+    with open(file_name, "w", encoding="UTF-8") as file:
+        json.dump(data, file)
