@@ -1,5 +1,6 @@
 import json
 from typing import Any
+import datetime
 
 class color:
     purple = '\033[95m'
@@ -17,7 +18,7 @@ def print_line(char="-", count=70) -> None:
     """Prints a line of characters for formatting in the terminal."""
     print(f"{char*count}")
 
-def difference_between_dates(current_date, due_date):
+def difference_between_dates(current_date: datetime, due_date: datetime) -> str:
     """Compares current_date and due_date. Returns difference with additional context"""
     difference = (due_date - current_date)
     if difference.days > 3:
@@ -25,7 +26,7 @@ def difference_between_dates(current_date, due_date):
     elif difference.days >= 0:
         return f"{color.yellow}{difference.days} days{color.end}"
     elif difference.days < 0:
-        return f"{color.red}{difference.days} days overdue{color.end}"
+        return f"{color.red}{abs(difference.days)} days overdue{color.end}"
 
 def load_json(file_name: str) -> dict:
     """Opens and loads a json file then returns."""
