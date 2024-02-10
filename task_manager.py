@@ -97,21 +97,27 @@ def format_task_id(task_id: str) -> str:
     leading_zeros_num = 5 - len(task_id_no_punc)
     return f"{'0'* leading_zeros_num}{task_id_no_punc}"
 
-def get_task_by_id() -> None:
+def get_task_by_id(called_from: str) -> None:
     """Takes a user input, formats and then prints the associated task."""
     wait_task = True
-    while wait_task == True:
+    while wait_task is True:
         task_id = input("\nChoose a task by typing in it's ID number, or enter '-1' to go back to the menu: ")
-        # TODO - Error handling if id can't be found.
-        # TODO - Needs to have logic to manage if it's called from view_mine.
-        formatted_task_id = format_task_id(task_id)
-        if formatted_task_id == "-1":
+        if task_id == "-1":
             wait_task = False
-        elif tasks[formatted_task_id]["username"] == curr_user:
-            print_line()
-            print(f"{'*'*30}{color.bold}Task {formatted_task_id}{color.end}{'*'*30}")
-            print_line()
-            print(create_task_str(formatted_task_id, tasks[formatted_task_id], "view_mine"))
+        formatted_task_id = format_task_id(task_id)
+        try:
+            tasks[formatted_task_id]
+        except KeyError:
+            print(f"\nError! {task_id} is not a valid task ID.")
+        else:
+            if tasks[formatted_task_id]["username"] == curr_user or called_from == "va":
+                print_line()
+                print(f"{'*'*30}{color.bold}Task {formatted_task_id}{color.end}{'*'*30}")
+                print_line()
+                print(create_task_str(formatted_task_id, tasks[formatted_task_id], "view_all"))
+            else:
+                print(f"\n{formatted_task_id} is not assigned to you. View this task and change it's completion status from 'view all'.")
+
 
 # ===================EXECTUION STARTS HERE===================
 
@@ -123,8 +129,6 @@ if not os.path.exists("tasks.txt"):
 with open("tasks.txt", 'r') as task_file:
     task_data = task_file.read().split("\n")
     task_data = [t for t in task_data if t != ""]
-
-
 
 task_list = []
 for t_str in task_data:
@@ -202,12 +206,13 @@ e - Exit
     
     elif menu == 'va':
         view_all(tasks)
-        get_task_by_id()
+        get_task_by_id("va")
 
 
     elif menu == 'vm':
         view_mine(tasks, curr_user)
-        get_task_by_id()
+        get_task_by_id("vm")
+        
 
     elif menu == 'ds' and curr_user == 'admin': 
         '''If the user is an admin they can display statistics about number of users
