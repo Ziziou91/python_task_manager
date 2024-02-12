@@ -45,5 +45,9 @@ def create_task_str(key: str, task: dict, called_from: str) -> str:
         task_str += f"{create_task_line(assigned_by, assigned_to)}"
     else:
         task_str += f"{assigned_by}\n"
+    status = "Incomplete"
+    if task['completed']:
+        status = "Complete"
+    task_str += f"\n{color.bold}{status}{color.end}"
     return task_str
 
