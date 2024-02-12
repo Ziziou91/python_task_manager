@@ -11,7 +11,8 @@ import json
 import re
 from datetime import datetime, date
 from unit_functions import color, print_line, load_json
-from draw_tasks import view_all, view_mine, create_task_str
+from draw_tasks import view_all, view_mine
+from edit_task import get_task_by_id
 
 DATETIME_STRING_FORMAT = "%Y-%m-%d"
 
@@ -96,51 +97,6 @@ def format_task_id(task_id: str) -> str:
     task_id_no_punc = re.sub(r"[^\w\s]", "", task_id)
     leading_zeros_num = 5 - len(task_id_no_punc)
     return f"{'0'* leading_zeros_num}{task_id_no_punc}"
-
-def get_task_by_id(called_from: str) -> None:
-    """Takes a user input, formats and then prints the associated task."""
-    wait_task = True
-    while wait_task is True:
-        task_id = input("\nChoose a task by typing in it's ID number, or enter '-1' to go back to the main menu: ")
-        print(task_id)
-        if task_id == "-1":
-            return
-        formatted_task_id = format_task_id(task_id)
-        try:
-            tasks[formatted_task_id]
-        except KeyError:
-            print(f"\nError! {task_id} is not a valid task ID.")
-        else:
-            if tasks[formatted_task_id]["username"] == curr_user or called_from == "va":
-                print_line()
-                print(f"{'*'*30}{color.bold}Task {formatted_task_id}{color.end}{'*'*30}")
-                print_line()
-                print(create_task_str(formatted_task_id, tasks[formatted_task_id], "view_all"))
-                amend_task(tasks, formatted_task_id)
-            else:
-                print(f"\n{formatted_task_id} is not assigned to you. View this task and change it's completion status from 'view all'.")
-
-def amend_task(tasks, task_id):
-    while True:
-        complete = "complete"
-        if tasks[task_id]["completed"] is True:
-            complete = "incomplete"
-        menu = input(f"""\nSelect one of the following options below:
-m - Mark task as {complete}
-e - Edit task
-c - Cancel and return to main menu
-: """).lower()
-        if menu == "m":
-            print("mark task as complete.")
-            print(tasks[task_id])
-            tasks[task_id]["completed"] = not tasks[task_id]["completed"]
-            print(tasks[task_id])
-        elif menu == "e":
-            print("edit task.")
-        elif menu == "c":
-            print("cancel and return to menu.")
-            return
-
 
 # ===================EXECTUION STARTS HERE===================
 
@@ -231,12 +187,12 @@ e - Exit
     
     elif menu == 'va':
         view_all(tasks)
-        get_task_by_id("va")
+        get_task_by_id(tasks, "va", curr_user) 
 
 
     elif menu == 'vm':
         view_mine(tasks, curr_user)
-        get_task_by_id("vm")
+        get_task_by_id(tasks, "vm", curr_user)
         
 
     elif menu == 'ds' and curr_user == 'admin': 
