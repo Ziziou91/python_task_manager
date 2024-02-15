@@ -134,39 +134,27 @@ for t_str in task_data:
 
     task_list.append(curr_t)
 
-users = load_json("users.json")
-tasks = load_json("tasks.json")
-
-
-#====Login Section====
-'''This code reads usernames and password from the user.txt file to 
-    allow a user to login.
-'''
+#===================LOAD USERS AND TASKS===================
 # If no user.txt file, write one with a default account
 if not os.path.exists("user.txt"):
     with open("user.txt", "w") as default_file:
         default_file.write("admin;password")
 
-# Read in user_data
-with open("user.txt", 'r') as user_file:
-    user_data = user_file.read().split("\n")
+users = load_json("users.json")
+tasks = load_json("tasks.json")
 
-# Convert to a dictionary
-username_password = {}
-for user in user_data:
-    username, password = user.split(';')
-    username_password[username] = password
 
+#===================Login Section===================
 logged_in = False
 while not logged_in:
 
     print("LOGIN")
     curr_user = input("Username: ")
     curr_pass = input("Password: ")
-    if curr_user not in username_password.keys():
+    if curr_user not in users.keys():
         print("User does not exist")
         continue
-    elif username_password[curr_user] != curr_pass:
+    elif users[curr_user]["password"] != curr_pass:
         print("Wrong password")
         continue
     else:
