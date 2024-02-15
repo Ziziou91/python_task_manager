@@ -32,7 +32,6 @@ def create_task_line(title: str, num: int, length: int=70) -> str:
 
 def create_task_str(key: str, task: dict, called_from: str) -> str:
     """Builds task_str to be printed in the terminal."""
-    # TODO - clean up due_date logic.
     current_date = datetime.now().date()
     due_date = datetime.strptime(task['due_date'], DATETIME_STRING_FORMAT).date()
     days_left = difference_between_dates(current_date, due_date)

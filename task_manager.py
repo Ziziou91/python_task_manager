@@ -71,7 +71,6 @@ def create_task_due_date() -> datetime:
             print("Invalid datetime format. Please use the format specified")
     return due_date_time
 
-
 def create_task(task_username: str, task_title: str, task_description: str, due_date_time: datetime, curr_user: str) -> dict:
     """Creates task dictionary and then returns."""
     print("curr_user", curr_user)
@@ -150,25 +149,19 @@ e - Exit
 
     if menu == 'r':
         reg_user(users)
-
     elif menu == 'a':
         add_task(tasks, users)
-    
     elif menu == 'va':
         view_all(tasks)
-        get_task_by_id(tasks, "va", curr_user) 
-
-
+        get_task_by_id(tasks, "va", curr_user)
     elif menu == 'vm':
         view_mine(tasks, curr_user)
         get_task_by_id(tasks, "vm", curr_user)
-        
-
     elif menu == 'ds' and curr_user == 'admin':
         '''If the user is an admin they can display statistics about number of users
             and tasks.'''
-        num_users = len(users.keys())
-        num_tasks = len(task_list)
+        num_users = len(users)
+        num_tasks = len(tasks)
 
         print("-----------------------------------")
         print(f"Number of users: \t\t {num_users}")

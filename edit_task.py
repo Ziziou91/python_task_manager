@@ -1,15 +1,8 @@
 """Functionality to edit existing tasks in tasks.json"""
 import re
-import readline
 from utility_functions import color, print_line, input_with_prefill
 from draw_tasks import create_task_str
 
-def rlinput(prompt, prefill=''):
-   readline.set_startup_hook(lambda: readline.insert_text(prefill))
-   try:
-      return input(prompt)  # or raw_input in Python 2
-   finally:
-      readline.set_startup_hook()
 
 def format_task_id(task_id: str) -> str:
     """Takes a user inputted task_id and formats it so it can be found in tasks.json"""
@@ -54,7 +47,7 @@ c - Cancel and return to main menu
         if menu == "m":
             tasks[task_id]["completed"] = not tasks[task_id]["completed"]
         elif menu == "e":
-            print("edit task.")
+            print(f"\n{color.bold}Edit Task.{color.end}")
             # TODO - completed tasks cannot be edited.
             user_str = input(f"""Select what you would like to edit:
 t - Edit title
@@ -63,9 +56,12 @@ u - Change username
 a - Amend due date
 """)
             if user_str == "t":
-                print(tasks[task_id]["title"])
-                test = rlinput("Input new title here: ", tasks[task_id]["title"])
-                print(test)
+                print(f"\n{color.bold}Previous title:{color.end}{color.red} {tasks[task_id]["title"]}{color.end}\n")
+                tasks[task_id]["title"] = input("Input new title here: ")
+                print("\nNew title successfully added.")
+                # TODO - needs to draw the task again for the user to review.
+                task_str = create_task_str(task_id, tasks[task_id], "view_mine")
+                print(task_str)
 
         elif menu == "c":
             print("cancel and return to menu.")
