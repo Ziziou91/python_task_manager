@@ -1,7 +1,7 @@
 """Tests for fctns in unit_functions."""
 import pytest
 from datetime import datetime
-from unit_functions import load_json, difference_between_dates, color
+from utility_functions import load_json, difference_between_dates, color
 
 # load_json tests
 def test_load_json_returns_dictionary():

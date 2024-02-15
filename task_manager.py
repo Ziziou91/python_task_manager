@@ -10,35 +10,43 @@ import os
 import json
 import re
 from datetime import datetime, date
-from unit_functions import color, print_line, load_json
+from utility_functions import color, print_line, load_json
 from draw_tasks import view_all, view_mine
 from edit_task import get_task_by_id
 
 DATETIME_STRING_FORMAT = "%Y-%m-%d"
 
 
-def reg_user(username_password: dict) -> None:
+def reg_user(username_password: dict, users: dict) -> None:
     """Create a new user to write to the user.txt file"""
     new_username = input("New Username: ")
-    while new_username in username_password:
+    while new_username in users.keys():
         print(f"Error! {new_username} has already been registered. Please choose a different username.")
         new_username = input("New Username: ")
     new_password = input("New Password: ")
     confirm_password = input("Confirm Password: ")
+    user_type = input("User type - admin or user: ")
+    while user_type != "admin" and user_type != "user":
+        print(f"Error! {user_type} is not a valid user type.")
+        user_type = input("User type - admin or user?")
     if new_password == confirm_password:
         print("New user added")
         username_password[new_username] = new_password
-        write_user_to_file(username_password)
+        users[new_username] = {
+            "password" : new_password,
+            "role" : user_type,
+            "tasks" : [],
+            "sign_up_date" : date.today().strftime(DATETIME_STRING_FORMAT)
+        }
+        write_user_to_file(users)
     else:
         print("Passwords do no match")
 
-def write_user_to_file(username_password: dict) -> None:
+def write_user_to_file(users: dict) -> None:
     """Write new user to user.txt file."""
-    with open("user.txt", "w", encoding="UTF-8") as out_file:
-        user_data = []
-        for k in username_password:
-            user_data.append(f"{k};{username_password[k]}")
-        out_file.write("\n".join(user_data))    
+    with open("users.json", "w", encoding="UTF-8") as f:
+        json.dump(users, f)
+    print("User successfully added.")    
 
 def add_task(task_list: list) -> None:
     """Allow a user to add a new task to task.txt file."""
@@ -126,7 +134,9 @@ for t_str in task_data:
 
     task_list.append(curr_t)
 
+users = load_json("users.json")
 tasks = load_json("tasks.json")
+
 
 #====Login Section====
 '''This code reads usernames and password from the user.txt file to 
@@ -180,7 +190,7 @@ e - Exit
 : ''').lower()
 
     if menu == 'r':
-        reg_user(username_password)
+        reg_user(username_password, users)
 
     elif menu == 'a':
         add_task(task_list)

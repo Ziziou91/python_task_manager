@@ -1,9 +1,15 @@
 """Functionality to edit existing tasks in tasks.json"""
 import re
-from unit_functions import color, print_line
+import readline
+from utility_functions import color, print_line, input_with_prefill
 from draw_tasks import create_task_str
 
-
+def rlinput(prompt, prefill=''):
+   readline.set_startup_hook(lambda: readline.insert_text(prefill))
+   try:
+      return input(prompt)  # or raw_input in Python 2
+   finally:
+      readline.set_startup_hook()
 
 def format_task_id(task_id: str) -> str:
     """Takes a user inputted task_id and formats it so it can be found in tasks.json"""
@@ -11,7 +17,7 @@ def format_task_id(task_id: str) -> str:
     leading_zeros_num = 5 - len(task_id_no_punc)
     return f"{'0'* leading_zeros_num}{task_id_no_punc}"
 
-def get_task_by_id(tasks: dict, called_from: str, curr_user: str) -> None: 
+def get_task_by_id(tasks: dict, called_from: str, curr_user: str) -> None:
     """Takes a user input, formats and then prints the associated task."""
     wait_task = True
     while wait_task is True:
@@ -56,6 +62,11 @@ d - Edit description
 u - Change username
 a - Amend due date
 """)
+            if user_str == "t":
+                print(tasks[task_id]["title"])
+                test = rlinput("Input new title here: ", tasks[task_id]["title"])
+                print(test)
+
         elif menu == "c":
             print("cancel and return to menu.")
             return
