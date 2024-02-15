@@ -49,23 +49,28 @@ def write_user_to_file(users: dict) -> None:
 
 def add_task(tasks: dict, users: dict) -> None:
     """Allow a user to add a new task to task.txt file."""
-    # TODO - refactor to break out current date and append logic
     task_username = input("Name of person assigned to task: ")
     while task_username not in users.keys():
         print(f"Error! {task_username} does not exist. Please enter a valid username")
         task_username = input("Name of person assigned to task: ")
     task_title = input("Title of Task: ")
     task_description = input("Description of Task: ")
+    due_date_time = create_task_due_date()
+    new_task = create_task(task_username, task_title, task_description, due_date_time, curr_user)
+    write_task_to_file(new_task, tasks)
+
+def create_task_due_date() -> datetime:
+    """Takes a user input and returns a datetime object."""
     while True:
         try:
             task_due_date = input("Due date of task (YYYY-MM-DD): ")
             due_date_time = datetime.strptime(task_due_date, DATETIME_STRING_FORMAT)
             break
-
+    
         except ValueError:
             print("Invalid datetime format. Please use the format specified")
-    new_task = create_task(task_username, task_title, task_description, due_date_time, curr_user)
-    write_task_to_file(new_task, tasks)
+    return due_date_time
+
 
 def create_task(task_username: str, task_title: str, task_description: str, due_date_time: datetime, curr_user: str) -> dict:
     """Creates task dictionary and then returns."""
@@ -86,7 +91,6 @@ def write_task_to_file(new_task:dict, tasks: dict) -> None:
     """Adds new_task to tast_list before writing it to tasks.txt."""
     new_id = create_task_id(tasks)
     tasks[new_id] = new_task
-    # TODO create write_json function, include error handling
     with open("tasks.json", "w", encoding="UTF-8") as f:
         json.dump(tasks, f)
     print("Task successfully added.")
