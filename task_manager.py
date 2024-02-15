@@ -17,7 +17,7 @@ from edit_task import get_task_by_id
 DATETIME_STRING_FORMAT = "%Y-%m-%d"
 
 
-def reg_user(username_password: dict, users: dict) -> None:
+def reg_user(users: dict) -> None:
     """Create a new user to write to the user.txt file"""
     new_username = input("New Username: ")
     while new_username in users.keys():
@@ -31,7 +31,6 @@ def reg_user(username_password: dict, users: dict) -> None:
         user_type = input("User type - admin or user?")
     if new_password == confirm_password:
         print("New user added")
-        username_password[new_username] = new_password
         users[new_username] = {
             "password" : new_password,
             "role" : user_type,
@@ -46,13 +45,13 @@ def write_user_to_file(users: dict) -> None:
     """Write new user to user.txt file."""
     with open("users.json", "w", encoding="UTF-8") as f:
         json.dump(users, f)
-    print("User successfully added.")    
+    print("User successfully added.")
 
-def add_task(task_list: list) -> None:
+def add_task(tasks: dict, users: dict) -> None:
     """Allow a user to add a new task to task.txt file."""
     # TODO - refactor to break out current date and append logic
     task_username = input("Name of person assigned to task: ")
-    while task_username not in username_password:
+    while task_username not in users.keys():
         print(f"Error! {task_username} does not exist. Please enter a valid username")
         task_username = input("Name of person assigned to task: ")
     task_title = input("Title of Task: ")
@@ -108,46 +107,14 @@ def format_task_id(task_id: str) -> str:
 
 # ===================EXECTUION STARTS HERE===================
 
-# Create tasks.txt if it doesn't exist
-if not os.path.exists("tasks.txt"):
-    with open("tasks.txt", "w") as default_file:
-        pass
-
-with open("tasks.txt", 'r') as task_file:
-    task_data = task_file.read().split("\n")
-    task_data = [t for t in task_data if t != ""]
-
-task_list = []
-for t_str in task_data:
-    curr_t = {}
-
-    # Split by semicolon and manually add each component
-    task_components = t_str.split(";")
-    curr_t['username'] = task_components[0]
-    curr_t['title'] = task_components[1]
-    curr_t['description'] = task_components[2]
-    curr_t['due_date'] = datetime.strptime(task_components[3], DATETIME_STRING_FORMAT)
-    curr_t['assigned_date'] = datetime.strptime(task_components[4], DATETIME_STRING_FORMAT)
-    curr_t['completed'] = True if task_components[5] == "Yes" else False
-    curr_t['assigned_by'] = task_components[6]
-    curr_t['task_id'] = task_components[7]
-
-    task_list.append(curr_t)
 
 #===================LOAD USERS AND TASKS===================
-# If no user.txt file, write one with a default account
-if not os.path.exists("user.txt"):
-    with open("user.txt", "w") as default_file:
-        default_file.write("admin;password")
-
 users = load_json("users.json")
 tasks = load_json("tasks.json")
-
 
 #===================Login Section===================
 logged_in = False
 while not logged_in:
-
     print("LOGIN")
     curr_user = input("Username: ")
     curr_pass = input("Password: ")
@@ -163,7 +130,7 @@ while not logged_in:
 
 
 while True:
-    # presenting the menu to the user and 
+    # presenting the menu to the user and
     # making sure that the user input is converted to lower case.
     print_line()
     print(f"{'*'*30}{color.bold}Main Menu{color.end}{'*'*31}")
@@ -178,10 +145,10 @@ e - Exit
 : ''').lower()
 
     if menu == 'r':
-        reg_user(username_password, users)
+        reg_user(users)
 
     elif menu == 'a':
-        add_task(task_list)
+        add_task(tasks, users)
     
     elif menu == 'va':
         view_all(tasks)
@@ -193,10 +160,10 @@ e - Exit
         get_task_by_id(tasks, "vm", curr_user)
         
 
-    elif menu == 'ds' and curr_user == 'admin': 
+    elif menu == 'ds' and curr_user == 'admin':
         '''If the user is an admin they can display statistics about number of users
             and tasks.'''
-        num_users = len(username_password.keys())
+        num_users = len(users.keys())
         num_tasks = len(task_list)
 
         print("-----------------------------------")
