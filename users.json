@@ -1,14 +1,16 @@
 {
-    "admin" : {
-        "password" : "password",
-        "role" : "admin", 
-        "tasks" : [],
-        "sign_up_date" : "2020-01-01"
-    },
-    "john" : {
-        "password" : "john",
-        "role" : "user", 
-        "tasks" : [],
-        "sign_up_date" : "2020-01-01"
-    }
+  "admin": {
+    "password": "password",
+    "role": "admin",
+    "tasks": [
+      "00003"
+    ],
+    "sign_up_date": "2020-01-01"
+  },
+  "john": {
+    "password": "john",
+    "role": "user",
+    "tasks": [],
+    "sign_up_date": "2020-01-01"
+  }
 }

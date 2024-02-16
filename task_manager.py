@@ -153,10 +153,10 @@ e - Exit
         add_task(tasks, users)
     elif menu == 'va':
         view_all(tasks)
-        get_task_by_id(tasks, "va", curr_user)
+        get_task_by_id(tasks, users, "va", curr_user)
     elif menu == 'vm':
         view_mine(tasks, curr_user)
-        get_task_by_id(tasks, "vm", curr_user)
+        get_task_by_id(tasks, users, "vm", curr_user)
     elif menu == 'ds' and curr_user == 'admin':
         '''If the user is an admin they can display statistics about number of users
             and tasks.'''

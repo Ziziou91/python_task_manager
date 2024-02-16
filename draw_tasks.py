@@ -26,6 +26,7 @@ def view_mine(tasks: dict, curr_user: str) -> None:
             print_line()
 
 def create_task_line(title: str, num: int, length: int=70) -> str:
+    """Create a line of a given length that includes title and num."""
     num_str = str(num)
     spacing = length - (len(title) + len(num_str))
     return f"{title + (" "*spacing) + num_str}\n"
