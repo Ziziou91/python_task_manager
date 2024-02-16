@@ -6,11 +6,10 @@
 # program will look in your root directory for the text files.
 
 #=====importing libraries===========
-import os
 import json
 import re
 from datetime import datetime, date
-from utility_functions import color, print_line, load_json
+from utility_functions import color, print_line, load_json, create_task_due_date
 from draw_tasks import view_all, view_mine
 from edit_task import get_task_by_id
 
@@ -58,18 +57,6 @@ def add_task(tasks: dict, users: dict) -> None:
     due_date_time = create_task_due_date()
     new_task = create_task(task_username, task_title, task_description, due_date_time, curr_user)
     write_task_to_file(new_task, tasks)
-
-def create_task_due_date() -> datetime:
-    """Takes a user input and returns a datetime object."""
-    while True:
-        try:
-            task_due_date = input("Due date of task (YYYY-MM-DD): ")
-            due_date_time = datetime.strptime(task_due_date, DATETIME_STRING_FORMAT)
-            break
-    
-        except ValueError:
-            print("Invalid datetime format. Please use the format specified")
-    return due_date_time
 
 def create_task(task_username: str, task_title: str, task_description: str, due_date_time: datetime, curr_user: str) -> dict:
     """Creates task dictionary and then returns."""
