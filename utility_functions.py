@@ -19,16 +19,6 @@ def print_line(char="-", count=70) -> None:
     """Prints a line of characters for formatting in the terminal."""
     print(f"{char*count}")
 
-def input_with_prefill(prompt: str, text: str) -> str:
-    """Input area is already populated with text. Used by edit task name and description."""
-    def hook():
-        readline.insert_text(text)
-        readline.redisplay()
-    readline.set_pre_input_hook(hook)
-    result = input(prompt)
-    readline.set_pre_input_hook()
-    return result
-
 def difference_between_dates(current_date: datetime, due_date: datetime) -> str:
     """Compares current_date and due_date. Returns difference with additional context"""
     difference = (due_date - current_date)

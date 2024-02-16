@@ -1,6 +1,7 @@
 """Functionality to edit existing tasks in tasks.json"""
 import re
-from utility_functions import color, print_line, input_with_prefill
+import json
+from utility_functions import color, print_line
 from draw_tasks import create_task_str
 
 
@@ -58,10 +59,18 @@ a - Amend due date
             if user_str == "t":
                 print(f"\n{color.bold}Previous title:{color.end}{color.red} {tasks[task_id]["title"]}{color.end}\n")
                 tasks[task_id]["title"] = input("Input new title here: ")
-                print("\nNew title successfully added.")
-                # TODO - needs to draw the task again for the user to review.
                 task_str = create_task_str(task_id, tasks[task_id], "view_mine")
-                print(task_str)
+
+                print("\nNew title successfully added.\n")
+                print_line()
+                print(f"{'*'*30}{color.bold}Task {task_id}{color.end}{'*'*30}")
+                print_line()
+                print(f"\n{task_str}")
+
+                with open("tasks.json", "w", encoding="UTF-8") as f:
+                    json.dump(tasks, f)
+                print("User successfully added.")
+
 
         elif menu == "c":
             print("cancel and return to menu.")
