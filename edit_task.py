@@ -57,23 +57,28 @@ u - Change username
 a - Amend due date
 """)
             if user_str == "t":
-                print(f"\n{color.bold}Previous title:{color.end}{color.red} {tasks[task_id]["title"]}{color.end}\n")
-                tasks[task_id]["title"] = input("Input new title here: ")
-                task_str = create_task_str(task_id, tasks[task_id], "view_mine")
-
-                print("\nNew title successfully added.\n")
-                print_line()
-                print(f"{'*'*30}{color.bold}Task {task_id}{color.end}{'*'*30}")
-                print_line()
-                print(f"\n{task_str}")
-
-                with open("tasks.json", "w", encoding="UTF-8") as f:
-                    json.dump(tasks, f)
-                print("User successfully added.")
-
-
+                edit_field(tasks, task_id, "title")
+            elif user_str == "d":
+                edit_field(tasks, task_id, "description")
         elif menu == "c":
             print("cancel and return to menu.")
             return
         else:
             print(f"{menu} is an invalid command. Please try again.")
+
+def edit_field(tasks: dict, task_id: str, field: str):
+    """update a given field (either title or description) with a user provided input and then write to tasks.json"""
+    print(f"\n{color.bold}Previous {field}:{color.end}{color.red} {tasks[task_id][field]}{color.end}\n")
+    tasks[task_id][field] = input(f"Input new {field} here: ")
+    task_str = create_task_str(task_id, tasks[task_id], "view_mine")
+
+    print(f"\nNew {field} successfully added.\n")
+    print_line()
+    print(f"{'*'*30}{color.bold}Task {task_id}{color.end}{'*'*30}")
+    print_line()
+    print(f"\n{task_str}")
+
+    with open("tasks.json", "w", encoding="UTF-8") as f:
+        json.dump(tasks, f)
+    print("User successfully added.")
+
