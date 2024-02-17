@@ -47,7 +47,7 @@ m - Mark task as {complete}
 e - Edit task
 c - Cancel and return to main menu
 : """).lower()
-        
+
         if menu == "m":
             tasks[task_id]["completed"] = not tasks[task_id]["completed"]
         elif menu == "e":
@@ -72,7 +72,7 @@ d - Edit description
 u - Change assigned user
 a - Amend due date
 """)
-        
+
         if menu == "t":
             edit_task_field(tasks, task_id, "title")
         elif menu == "d":
@@ -86,7 +86,7 @@ def edit_task_field(tasks: dict, task_id: str, field: str, users: dict = None) -
     """update a given field (either title or description) with a user provided input and then write to tasks.json"""
     prev_field_str = f"\n{color.bold}Previous {field}:{color.end}{color.red} {tasks[task_id][field]}{color.end}\n"
     print(prev_field_str)
-    
+
     if field == "username":
         new_value = update_username(users, task_id, new_value, field)
     elif field == "due_date":

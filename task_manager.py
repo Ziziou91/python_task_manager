@@ -11,6 +11,7 @@ import re
 from datetime import datetime, date
 from utility_functions import color, print_line, load_json, create_task_due_date
 from draw_tasks import view_all, view_mine
+from reports import generate_task_report, generate_user_report
 from edit_task import get_task_by_id
 
 DATETIME_STRING_FORMAT = "%Y-%m-%d"
@@ -130,7 +131,8 @@ r - Registering a user
 a - Adding a task
 va - View all tasks
 vm - View my task
-ds - Display statistics
+gr - Generate reports
+s - Stastics
 e - Exit
 : ''').lower()
 
@@ -144,6 +146,9 @@ e - Exit
     elif menu == 'vm':
         view_mine(tasks, curr_user)
         get_task_by_id(tasks, users, "vm", curr_user)
+    elif menu == "gr":
+        generate_user_report()
+        generate_task_report()
     elif menu == 'ds' and curr_user == 'admin':
         '''If the user is an admin they can display statistics about number of users
             and tasks.'''
