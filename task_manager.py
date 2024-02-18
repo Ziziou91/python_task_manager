@@ -57,11 +57,10 @@ def add_task(tasks: dict, users: dict) -> None:
     task_description = input("Description of Task: ")
     due_date_time = create_task_due_date()
     new_task = create_task(task_username, task_title, task_description, due_date_time, curr_user)
-    write_task_to_file(new_task, tasks)
+    write_task_to_file(new_task, tasks, users)
 
 def create_task(task_username: str, task_title: str, task_description: str, due_date_time: datetime, curr_user: str) -> dict:
     """Creates task dictionary and then returns."""
-    print("curr_user", curr_user)
     curr_date = date.today()
     task = {
     "username": task_username,
@@ -74,12 +73,18 @@ def create_task(task_username: str, task_title: str, task_description: str, due_
     }
     return task
 
-def write_task_to_file(new_task:dict, tasks: dict) -> None:
+def write_task_to_file(new_task:dict, tasks: dict, users: dict) -> None:
     """Adds new_task to tast_list before writing it to tasks.txt."""
     new_id = create_task_id(tasks)
     tasks[new_id] = new_task
+    # Write updated tasks to tasks.json
     with open("tasks.json", "w", encoding="UTF-8") as f:
         json.dump(tasks, f)
+    # Add task_id to user tasks list, then write new users dict to users.json
+    assigned_user = tasks[new_id]["username"]
+    users[assigned_user]["tasks"].append(new_id)
+    with open("users.json", "w", encoding="UTF-8") as f:
+        json.dump(users, f)
     print("Task successfully added.")
 
 def create_task_id(tasks: dict) -> str:
@@ -147,7 +152,7 @@ e - Exit
         view_mine(tasks, curr_user)
         get_task_by_id(tasks, users, "vm", curr_user)
     elif menu == "gr":
-        # generate_user_report()
+        generate_user_report(tasks, users)
         generate_task_report(tasks)
     elif menu == 'ds' and curr_user == 'admin':
         '''If the user is an admin they can display statistics about number of users

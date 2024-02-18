@@ -48,5 +48,27 @@ def generate_task_report(tasks: dict) -> None:
         f.write(text)
 
 
-def generate_user_report():
-    print("in generate_user_report")
+def generate_user_report(tasks: dict, users: dict) -> None:
+    """Creates a report on all users and writes to reports/user_overview.txt.""" 
+    # Name of each user, and if they are an admin or regular user
+    # - The percentage of tasks that have been asigned to each user
+    # - The percentage of tasks that the users has completed
+    # - The percentage of tasks still to be completed by that user
+    # - The percentage of tasks still to be completed by that user that are overdue
+
+
+
+
+
+
+
+
+    # Create string to write to file
+    str_line = f"{'*'*70}"
+    name_line = file_title("user_overview")
+    total_users = f"USERS TOTAL - {len(users)}"
+
+    text = f"{str_line}\n{name_line}\n{str_line}\n\n{total_users}"
+
+    with open("../reports/user_overview.txt", "w", encoding="UTF-8") as f:
+        f.write(text)
