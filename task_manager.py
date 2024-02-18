@@ -147,8 +147,8 @@ e - Exit
         view_mine(tasks, curr_user)
         get_task_by_id(tasks, users, "vm", curr_user)
     elif menu == "gr":
-        generate_user_report()
-        generate_task_report()
+        # generate_user_report()
+        generate_task_report(tasks)
     elif menu == 'ds' and curr_user == 'admin':
         '''If the user is an admin they can display statistics about number of users
             and tasks.'''
