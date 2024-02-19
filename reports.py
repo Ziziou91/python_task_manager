@@ -1,5 +1,6 @@
 from typing import Tuple
 from datetime import datetime, date
+from utility_functions import create_task_line
 
 DATETIME_STRING_FORMAT = "%Y-%m-%d"
 
@@ -48,27 +49,51 @@ def generate_task_report(tasks: dict) -> None:
         f.write(text)
 
 
+def create_user_str(tasks: dict, users: dict, user: str) -> str:
+    task_list = users[user]["tasks"]
+
+    user_str = f"{file_title(user)}\nTotal tasks: {len(task_list)}\n\n"
+    user_str += f"{create_user_task_str("complete", tasks, task_list, user)}\n"
+    user_str += f"{create_user_task_str("incomplete", tasks, task_list, user)}\n"
+    user_str += create_user_task_str("overdue", tasks, task_list, user)
+    return f"{user_str}\n"
+
+def create_user_task_str(status: str, tasks: dict, task_list: list, user: str) -> str:
+    current_date = date.today().strftime(DATETIME_STRING_FORMAT)
+    status_check = False
+    tasks_str = ""
+    if status == "complete":
+        status_check = True
+
+    task_count = 0
+    for task in tasks:
+        if status == "overdue":
+            if task in task_list and tasks[task]["completed"] == status_check and tasks[task]["due_date"] < current_date:
+                task_count += 1
+                tasks_str += f"* {create_task_line(tasks[task]["title"], task, 68)}"
+        elif task in task_list and tasks[task]["completed"] == status_check:
+            task_count += 1
+            tasks_str += f"* {create_task_line(tasks[task]["title"], task, 68)}"
+    if task_count == 0:
+        status_str = create_task_line(f"{status} tasks: {task_count}", "0%")
+    else:
+        status_str = create_task_line(f"{status} tasks: {task_count}", f"{round((task_count/len(task_list))* 100)}%")
+    return status_str + tasks_str
+        
+
 def generate_user_report(tasks: dict, users: dict) -> None:
     """Creates a report on all users and writes to reports/user_overview.txt.""" 
-    # Name of each user, and if they are an admin or regular user
-    # - The percentage of tasks that have been asigned to each user
-    # - The percentage of tasks that the users has completed
-    # - The percentage of tasks still to be completed by that user
-    # - The percentage of tasks still to be completed by that user that are overdue
-
-
-
-
-
-
+    users_str = ""
+    for user in users:
+        users_str += create_user_str(tasks, users, user)
 
 
     # Create string to write to file
     str_line = f"{'*'*70}"
     name_line = file_title("user_overview")
-    total_users = f"USERS TOTAL - {len(users)}"
+    total_users = f"Total users - {len(users)}"
 
-    text = f"{str_line}\n{name_line}\n{str_line}\n\n{total_users}"
+    text = f"{str_line}\n{name_line}\n{str_line}\n\n{total_users}\n\n{users_str}"
 
     with open("../reports/user_overview.txt", "w", encoding="UTF-8") as f:
         f.write(text)

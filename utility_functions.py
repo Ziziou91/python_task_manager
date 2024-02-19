@@ -21,6 +21,12 @@ def print_line(char="-", count=70) -> None:
     """Prints a line of characters for formatting in the terminal."""
     print(f"{char*count}")
 
+def create_task_line(title: str, num: int, length: int=70) -> str:
+    """Create a line of a given length that includes title and num."""
+    num_str = str(num)
+    spacing = length - (len(title) + len(num_str))
+    return f"{title + (" "*spacing) + num_str}\n"
+
 def difference_between_dates(current_date: datetime, due_date: datetime) -> str:
     """Compares current_date and due_date. Returns difference with additional context"""
     difference = (due_date - current_date)
