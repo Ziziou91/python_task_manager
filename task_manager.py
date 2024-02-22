@@ -101,73 +101,77 @@ def format_task_id(task_id: str) -> str:
     leading_zeros_num = 5 - len(task_id_no_punc)
     return f"{'0'* leading_zeros_num}{task_id_no_punc}"
 
+def main() -> None:
+    """Main function where app logic is run."""
+    #===================LOAD USERS AND TASKS===================
+    users = load_json("users.json")
+    tasks = load_json("tasks.json")
+    
+    #===================Login Section===================
+    logged_in = False
+    while not logged_in:
+        print("LOGIN")
+        curr_user = input("Username: ")
+        curr_pass = input("Password: ")
+        if curr_user not in users.keys():
+            print("User does not exist")
+            continue
+        elif users[curr_user]["password"] != curr_pass:
+            print("Wrong password")
+            continue
+        else:
+            print("Login Successful!")
+            logged_in = True
+    
+    
+    while True:
+        # presenting the menu to the user and
+        # making sure that the user input is converted to lower case.
+        print_line()
+        print(f"{'*'*30}{color.bold}Main Menu{color.end}{'*'*31}")
+        print_line()
+        menu = input('''Select one of the following options below:
+    r - Registering a user
+    a - Adding a task
+    va - View all tasks
+    vm - View my task
+    gr - Generate reports
+    s - Stastics
+    e - Exit
+    : ''').lower()
+    
+        if menu == 'r':
+            reg_user(users)
+        elif menu == 'a':
+            add_task(tasks, users)
+        elif menu == 'va':
+            view_all(tasks)
+            get_task_by_id(tasks, users, "va", curr_user)
+        elif menu == 'vm':
+            view_mine(tasks, curr_user)
+            get_task_by_id(tasks, users, "vm", curr_user)
+        elif menu == "gr":
+            generate_user_report(tasks, users)
+            generate_task_report(tasks)
+        elif menu == 'ds' and curr_user == 'admin':
+            '''If the user is an admin they can display statistics about number of users
+                and tasks.'''
+            num_users = len(users)
+            num_tasks = len(tasks)
+
+            print("-----------------------------------")
+            print(f"Number of users: \t\t {num_users}")
+            print(f"Number of tasks: \t\t {num_tasks}")
+            print("-----------------------------------")
+
+        elif menu == 'e':
+            print('Goodbye!!!')
+            exit()
+
+        else:
+            print("You have made a wrong choice, Please Try again")
+
 # ===================EXECTUION STARTS HERE===================
 
-
-#===================LOAD USERS AND TASKS===================
-users = load_json("users.json")
-tasks = load_json("tasks.json")
-
-#===================Login Section===================
-logged_in = False
-while not logged_in:
-    print("LOGIN")
-    curr_user = input("Username: ")
-    curr_pass = input("Password: ")
-    if curr_user not in users.keys():
-        print("User does not exist")
-        continue
-    elif users[curr_user]["password"] != curr_pass:
-        print("Wrong password")
-        continue
-    else:
-        print("Login Successful!")
-        logged_in = True
-
-
-while True:
-    # presenting the menu to the user and
-    # making sure that the user input is converted to lower case.
-    print_line()
-    print(f"{'*'*30}{color.bold}Main Menu{color.end}{'*'*31}")
-    print_line()
-    menu = input('''Select one of the following options below:
-r - Registering a user
-a - Adding a task
-va - View all tasks
-vm - View my task
-gr - Generate reports
-s - Stastics
-e - Exit
-: ''').lower()
-
-    if menu == 'r':
-        reg_user(users)
-    elif menu == 'a':
-        add_task(tasks, users)
-    elif menu == 'va':
-        view_all(tasks)
-        get_task_by_id(tasks, users, "va", curr_user)
-    elif menu == 'vm':
-        view_mine(tasks, curr_user)
-        get_task_by_id(tasks, users, "vm", curr_user)
-    elif menu == "gr":
-        generate_user_report(tasks, users)
-        generate_task_report(tasks)
-    elif menu == 'ds' and curr_user == 'admin':
-        '''If the user is an admin they can display statistics about number of users
-            and tasks.'''
-        num_users = len(users)
-        num_tasks = len(tasks)
-
-        print("-----------------------------------")
-        print(f"Number of users: \t\t {num_users}")
-        print(f"Number of tasks: \t\t {num_tasks}")
-        print("-----------------------------------")    
-
-    elif menu == 'e':
-        print('Goodbye!!!')
-        exit()
-
-    else:
-        print("You have made a wrong choice, Please Try again")
+if __name__ == "__main__":
+    main()

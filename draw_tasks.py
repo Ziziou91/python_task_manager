@@ -4,7 +4,7 @@ from utility_functions import color, print_line, difference_between_dates
 DATETIME_STRING_FORMAT = "%Y-%m-%d"
 
 def view_all(tasks: list) -> None:
-    """Reads tasks from task.txt file and prints all to the console."""
+    """Reads tasks from task.txt file and prints all tasks to the console."""
     print_line()
     print(f"{'*'*31}{color.bold}All tasks{color.end}{'*'*31}")
     print_line()
@@ -14,7 +14,7 @@ def view_all(tasks: list) -> None:
         print_line()
 
 def view_mine(tasks: dict, curr_user: str) -> None:
-    """Reads tasks from task.txt file and prints tasks assigned to user."""
+    """Reads tasks from task.txt file and prints only tasks assigned to user."""
     print_line()
     print(f"{'*'*31}{color.bold}My tasks{color.end}{'*'*31}")
     print_line()
