@@ -5,15 +5,15 @@ class Task:
     """Each instance will include all task details, as well functionality."""
     # TODO - Should datetime be stored utf best practice
     # TODO - New instance of class should write task details to tasks.json on creation
-    def __init__(self, username: str, title:str, description:str, assigned_by:str, due_date_str:datetime.date) -> None:
+    def __init__(self, username: str, title:str, description:str, assigned_by:str, due_date_str:str) -> None:
         self.username = username
         self.title = title
         self.description = description
         self.due_date = self.create_due_date(due_date_str)
         self.assigned_date = date.today()
-        self.assigned_by : assigned_by
+        self.assigned_by = assigned_by
 
-    completed = False,
+    completed = False
 
     def create_due_date(self, due_date_str) -> datetime.date:
         """takes a due_date_str (format 'YYYY-MM-DD') and returns a date object"""
@@ -26,7 +26,7 @@ class Task:
         max_task_id = max(task_id_list)
         new_task_id = str(max_task_id +1)
 
-        # Create the desired string format for task_id and then return.
+        # Create the desired string format (e.g. 00005) for task_id and return.
         leading_zero_len = 5 - len(new_task_id)
         return f"{(("0" * leading_zero_len) + new_task_id)}"
 
