@@ -74,7 +74,7 @@ def create_task(task_username: str, task_title: str, task_description: str, due_
     return task
 
 def write_task_to_file(new_task:dict, tasks: dict, users: dict) -> None:
-    """Adds new_task to tast_list before writing it to tasks.txt."""
+    """Adds new_task to task_list before writing it to tasks.txt."""
     new_id = create_task_id(tasks)
     tasks[new_id] = new_task
     # Write updated tasks to tasks.json
