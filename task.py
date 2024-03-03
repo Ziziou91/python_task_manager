@@ -1,5 +1,7 @@
-
-from datetime import datetime, date
+"""Task class to contain all data and expected functionality for any task."""
+from datetime import date
+from os import path
+from utility_functions import write_json
 
 class Task:
     """Each instance will include all task details, as well functionality."""
@@ -32,6 +34,19 @@ class Task:
             # Create the desired string format (e.g. 00005) for task_id and return.
             leading_zero_len = 5 - len(new_task_id)
             return f"{(("0" * leading_zero_len) + new_task_id)}"
+
+    def write_tasks_to_file(self, file_name:str, data:dict) -> str:
+        """Ensures that file_name and data are correct before writing to file."""
+        # Return an error message if any tests failed
+        # TODO - 1) path.isfile doesn't work with tmpdir in task_test
+        #if not path.isfile(file_name):
+        #    return "ERROR!"
+        ## TODO - 2) check that a JSON file already exists at file name
+
+        # TODO - 3) check that data is non-empty, and there is a task with ID 00001 and it has the expected properties.
+        # Only then write to file.
+        write_json(file_name, data)
+        return path.isfile(file_name)
 
 
     def print_this_task(self):

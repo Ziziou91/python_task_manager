@@ -1,9 +1,9 @@
 """Tests for fctns in unit_functions."""
 import pytest
 from datetime import datetime
-from utility_functions import load_json, difference_between_dates, color
+from utility_functions import write_json, load_json, difference_between_dates, color
 
-# load_json tests
+# ===========load_json tests===========
 def test_load_json_returns_dictionary():
     """ensures that load_json returns a dictionary"""
     assert isinstance(load_json("tasks.json"), dict)
@@ -18,6 +18,16 @@ def test_load_json_returns_expected_value():
     """ensures that load_json correctly loads json"""
     expected_dict = {"hello" : "world"}
     assert  load_json("tests/test_data.json") == expected_dict
+
+# ===========write_json tests===========
+def test_write_json(tmpdir):
+    """Ensure that write_json correctly dumps to a JSON file."""
+    file = tmpdir.join("output.json")
+    write_json(str(file), {"00001": {}})
+    assert file.read() == '{"00001": {}}'
+
+    result = load_json(file) 
+    assert result == {"00001": {}}
 
 # difference_between_dates tests
 def test_difference_between_dates_returns_string():

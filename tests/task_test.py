@@ -70,3 +70,16 @@ class TestCreateTaskIdHandlesLargerTasksDict(TestCreateTaskId):
     def test_create_task_id_returns_expected(self, test_task_instance:Task) -> None:
         """Test that create_due_date works when given an empy dictionary."""
         assert test_task_instance.create_task_id(self.TASKS) == "00005"
+
+# ===========Test write_tasks_to_file============
+def test_write_tasks_to_file(test_task_instance:Task, tmpdir) -> None:
+    """Test that write_tasks_to_file works."""
+    file = tmpdir.join("output.json")
+    test_task_instance.write_tasks_to_file(file, {"00001": {}})
+    assert file.read() == '{"00001": {}}'
+    assert test_task_instance.write_tasks_to_file(file, {"00001": {}}) is True
+
+# What happens when data is empty, or not what the function expects?
+# def test_write_tasks_to_file_handles_invalid_path(test_task_instance:Task) -> None:
+#     """Test write_tasks_to_file returns an error message when given an invalid file path."""
+#     assert test_task_instance.write_tasks_to_file("invalid_path", {"00001": {}}) == "ERROR!"
