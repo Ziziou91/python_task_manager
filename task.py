@@ -15,7 +15,7 @@ class Task:
 
     completed = False
 
-    def create_due_date(self, due_date_str) -> datetime.date:
+    def create_due_date(self, due_date_str) -> date:
         """takes a due_date_str (format 'YYYY-MM-DD') and returns a date object"""
         due_date_list = [int(val) for val in due_date_str.split("-")]
         return date(*due_date_list)

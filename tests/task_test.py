@@ -1,10 +1,6 @@
 from datetime import date
 import pytest
 from task import Task
-# Functionality my Class should have:
-# - creates an instance of Task
-# - Stores attributes with correct names and types
-# - Methods behave as expected
 
 # ============Task instance tests============
 def test_Task_creates_working_instance():
@@ -49,3 +45,26 @@ def test_task_instance_attributes_value(task_attr, expected):
     test_task = Task("Jane", "Test Task", "This is a test task", "Jane", "2024-08-01")
     test_attr = getattr(test_task, task_attr)
     assert test_attr == expected
+
+# ===========Test create_due_date============
+def test_create_due_date_returns_date_object():
+    """Ensure that create_due_date returns a date object."""
+    test_task = Task("Test", "Test", "Test", "Test", "2024-08-01")
+    assert isinstance(test_task.create_due_date("2024-08-01"), date)
+
+def test_create_due_date_returns_expected():
+    """Test that create_due_date returns expected value."""
+    test_task = Task("Test", "Test", "Test", "Test", "2024-08-01")
+    assert test_task.create_due_date("2024-08-01") == date(2024, 8, 1)
+
+# ===========Test create_task_id============
+def create_task_id_returns_str():
+    """Test that create_due_date returns a string."""
+    test_task = Task("Test", "Test", "Test", "Test", "2024-08-01")
+    assert isinstance(test_task.create_due_date({"00001": {}}), str)
+
+def create_task_id_handles_empty_dict():
+    """Test that create_due_date works when given an empy dictionary."""
+    test_task = Task("Test", "Test", "Test", "Test", "2024-08-01")
+    assert isinstance(test_task.create_due_date({}), str)
+    assert test_task.create_due_date({}) == "00001"
