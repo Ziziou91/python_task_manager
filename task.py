@@ -17,10 +17,12 @@ class Task:
 
     completed = False
 
+
     def create_due_date(self, due_date_str) -> date:
         """takes a due_date_str (format 'YYYY-MM-DD') and returns a date object"""
         due_date_list = [int(val) for val in due_date_str.split("-")]
         return date(*due_date_list)
+
 
     def create_task_id(self, tasks:dict) -> str:
         """Finds highest current task_id in tasks, then creates unique task_id for current task."""
@@ -35,19 +37,45 @@ class Task:
             leading_zero_len = 5 - len(new_task_id)
             return f"{(("0" * leading_zero_len) + new_task_id)}"
 
+
     def write_tasks_to_file(self, file_name:str, data:dict) -> str:
         """Ensures that file_name and data are correct before writing to file."""
-        # Return an error message if any tests failed
-        # TODO - 1) path.isfile doesn't work with tmpdir in task_test
-        #if not path.isfile(file_name):
-        #    return "ERROR!"
-        ## TODO - 2) check that a JSON file already exists at file name
-
-        # TODO - 3) check that data is non-empty, and there is a task with ID 00001 and it has the expected properties.
-        # Only then write to file.
-        write_json(file_name, data)
-        return path.isfile(file_name)
-
+        # Check if file_name is valid path to file that already exists
+        if not path.isfile(file_name):
+            return f"ERROR! - '{file_name}' is not a valid path."
+        # Check if data is empty
+        elif not bool(data):
+            return "ERROR! - data is empty."
+        # Check if data doesn't include "00001" - func will only ever be called when there is something to write,
+        # and task_id's are assigned numerically, so follows there should always be a task with id "00001".
+        elif "00001" not in data:
+            print("ERROR! - missing data.")
+            return f"ERROR! - missing data. task '00001' could not be found. Provided data is below\n{data}."
+        
+        else:
+            ## Check that the newest task in data has all expected properties. As tasks are added 1 at a time,
+            ## sufficent to only check most recent is correct on each call to write_tasks_to_file.
+            #
+            ## Get the most recent (greatest) task_id.
+            #task_id_list = [int(task_id) for task_id in data.keys()]
+            #new_task_id = str(max(task_id_list))
+            #leading_zero_len = 5 - len(new_task_id)
+            #new_task_id = f"{(("0" * leading_zero_len) + new_task_id)}"
+            #
+            ## Check that most recent task has all required properties.
+            #required_properties = ["username", "title", "description", "due_date", "assigned_date", "completed", "assigned_up"]
+            #print("new_task_id", new_task_id)
+            #prop_count = 0
+            #for prop in data[new_task_id]:
+            #    prop_count += 1
+            #    if prop not in required_properties:
+            #        return f"ERROR! property {prop} in task {new_task_id} is not valid."
+            #if prop_count != len(required_properties):
+            #    return f"ERROR! Task {new_task_id} does not have correct number of properties."
+#
+            #else:
+                write_json(file_name, data)
+                return f"data successfully written to {file_name}"
 
     def print_this_task(self):
         print(f"due date\t{self.due_date}\ttype\t{type(self.due_date)}")
