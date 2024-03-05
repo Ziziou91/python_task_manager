@@ -17,11 +17,12 @@ class Task:
 
     completed = False
 
-    def amend_task(self):
+    def amend_task(self) -> None:
         # Needs menu logic
         # go about using input() like you normally would:
+        f = input("What would you like to do?")
         i = input("What is your name?")
-        return i 
+        return f"{f} {i}"
         # Take property and data arguments
         # check type of data is correct
         # route accordingly - call: 
@@ -29,7 +30,12 @@ class Task:
         # Update username 
         # - call method on associated user object to add the task
         # - "                                   " to remove the task
-        pass
+    def amend_task_get_user_input(self) -> dict:
+        """Walks user through a menu or options to edit task. 
+        Returns a dictionary with the property to change and new value."""
+        f = input("What would you like to do?")
+        i = input("What is your name?")
+        return f"{f} {i}"
 
     def create_due_date(self, due_date_str) -> date:
         """takes a due_date_str (format 'YYYY-MM-DD') and returns a date object"""

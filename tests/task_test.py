@@ -42,14 +42,32 @@ class TestTaskInstanceAttributes:
         test_attr = getattr(test_task_instance, task_attr)
         assert test_attr == expected
 
-# ===========Test amend_task============
-def test_something_that_involves_user_input(monkeypatch:pytest.MonkeyPatch, test_task_instance:Task) -> None:
 
-    # monkeypatch the "input" function, so that it returns "Mark".
-    # This simulates the user entering "Mark" in the terminal:
-    monkeypatch.setattr('builtins.input', lambda _: "Mark")
 
-    assert test_task_instance.amend_task() == "Mark" 
+# ===========Test amend_task_get_user_input============
+@pytest.mark.parametrize(
+    ("str_1", "str_2", "expected"),
+    [
+        ("hello", "world", "hello world"),
+        ("Eat Chocolate", "Mark", "Eat Chocolate Mark")
+    ]
+)
+class TestAmendTaskGetUserInput:
+    """Tests for amend_task_get_user_input."""
+    def test_amend_task_get_user_input_returns_string(self, monkeypatch:pytest.MonkeyPatch, test_task_instance:Task, str_1:str, str_2:str, expected:str) -> None:
+        """Test amend_task_get_user_input returns a string."""
+        responses = iter([str_1, str_2])
+        monkeypatch.setattr('builtins.input', lambda _: next(responses))
+
+        assert isinstance(test_task_instance.amend_task_get_user_input(), str)
+
+    def test_amend_task_get_user_input_returns_expected(self, monkeypatch:pytest.MonkeyPatch, test_task_instance:Task, str_1:str, str_2:str, expected:str):
+        """Test amend_task_get_user_input returns expected."""
+        responses = iter([str_1, str_2])
+        monkeypatch.setattr('builtins.input', lambda _: next(responses))
+
+        assert test_task_instance.amend_task_get_user_input() == expected
+
 
 # ===========Test create_due_date============
 def test_create_due_date_returns_date_object(test_task_instance:Task) -> None:
