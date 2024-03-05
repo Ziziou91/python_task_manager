@@ -1,11 +1,10 @@
 """Task class to contain all data and expected functionality for any task."""
 from datetime import date
 from os import path
-from utility_functions import write_json
+from utility_functions import color, write_json
 
 class Task:
     """Each instance will include all task details, as well functionality."""
-    # TODO - Should datetime be stored utf best practice
     # TODO - New instance of class should write task details to tasks.json on creation
     def __init__(self, username: str, title:str, description:str, assigned_by:str, due_date_str:str) -> None:
         self.username = username
@@ -18,24 +17,47 @@ class Task:
     completed = False
 
     def amend_task(self) -> None:
-        # Needs menu logic
-        # go about using input() like you normally would:
-        f = input("What would you like to do?")
-        i = input("What is your name?")
-        return f"{f} {i}"
+        # TODO - check user is either the current task owner, or admin.
+
         # Take property and data arguments
-        # check type of data is correct
+        
         # route accordingly - call: 
         # create_due_date
         # Update username 
         # - call method on associated user object to add the task
         # - "                                   " to remove the task
+        pass
+
+
     def amend_task_get_user_input(self) -> dict:
         """Walks user through a menu or options to edit task. 
         Returns a dictionary with the property to change and new value."""
-        f = input("What would you like to do?")
-        i = input("What is your name?")
-        return f"{f} {i}"
+        # create 'completed_switch' variable to dynamically represent status of
+        # 'completed' in upcoming input prompt
+        completed_switch = "complete"
+        if  self.completed:
+            completed_switch = "incomplete"
+        
+        print(f"\n{color.bold}Edit Task.{color.end}")
+        menu = input(f"""Select what you would like to edit:
+\tm - Mark task as {completed_switch}
+\tt - Edit title
+\td - Edit description
+\tu - Change assigned user
+\ta - Amend due date
+""").lower()
+        # Take user's 'menu' input, check it's valid. If not, ask again.
+        while True:
+            valid_inputs = ["m", "t", "d", "u", "a"]
+            if menu in valid_inputs:
+                break
+            else:
+                print(f"ERROR! {menu} is not a valid input")
+                menu = input("Please select what you would like to edit: ")
+        # Format and validate new data
+        # return as dict e.g. {"property" : "title", "data": "Complete app"}
+
+        return f"success {menu}"
 
     def create_due_date(self, due_date_str) -> date:
         """takes a due_date_str (format 'YYYY-MM-DD') and returns a date object"""

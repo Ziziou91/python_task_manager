@@ -93,9 +93,6 @@ def edit_task_field(tasks: dict, task_id: str, field: str, users: dict = None) -
         new_value = create_task_due_date().strftime(DATETIME_STRING_FORMAT)
     else:
         new_value = input(f"Input new {field} here: ")
-    if field == "username":
-        new_value = update_username(users, task_id, new_value, field)
-
     tasks[task_id][field] = new_value
     task_str = create_task_str(task_id, tasks[task_id], "view_all")
 

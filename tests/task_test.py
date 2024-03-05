@@ -46,24 +46,43 @@ class TestTaskInstanceAttributes:
 
 # ===========Test amend_task_get_user_input============
 @pytest.mark.parametrize(
-    ("str_1", "str_2", "expected"),
+    ("str_1", "expected"),
     [
-        ("hello", "world", "hello world"),
-        ("Eat Chocolate", "Mark", "Eat Chocolate Mark")
+        ("m", "success m"),
+        ("t", "success t"),
+        ("d", "success d"),
+        ("u", "success u"),
+        ("a", "success a")
     ]
 )
 class TestAmendTaskGetUserInput:
     """Tests for amend_task_get_user_input."""
-    def test_amend_task_get_user_input_returns_string(self, monkeypatch:pytest.MonkeyPatch, test_task_instance:Task, str_1:str, str_2:str, expected:str) -> None:
+    def test_amend_task_get_user_input_returns_string(self, monkeypatch:pytest.MonkeyPatch, test_task_instance:Task, str_1:str, expected:str) -> None:
         """Test amend_task_get_user_input returns a string."""
-        responses = iter([str_1, str_2])
+        responses = iter([str_1])
         monkeypatch.setattr('builtins.input', lambda _: next(responses))
 
         assert isinstance(test_task_instance.amend_task_get_user_input(), str)
 
-    def test_amend_task_get_user_input_returns_expected(self, monkeypatch:pytest.MonkeyPatch, test_task_instance:Task, str_1:str, str_2:str, expected:str):
+    def test_amend_task_get_user_input_handles_uppercase_menu_input(self, monkeypatch:pytest.MonkeyPatch, test_task_instance:Task, str_1:str, expected:str) -> None:
+        """Test amend_task_get_user_input handles upper-case 'menu' inputs."""
+        responses = iter([str_1.upper()])
+        monkeypatch.setattr('builtins.input', lambda _: next(responses))
+
+        assert test_task_instance.amend_task_get_user_input() == expected
+
+    def test_amend_task_get_user_input_handles_incorrect_initial_menu_input(self, monkeypatch:pytest.MonkeyPatch, test_task_instance:Task, str_1:str, expected:str) -> None:
+        """Test amend_task_get_user_input handles an incorrect 'menu' input, 
+        asking again until correct."""
+        responses = iter(["hello", "test", str_1])
+        monkeypatch.setattr('builtins.input', lambda _: next(responses))
+
+        assert test_task_instance.amend_task_get_user_input() == expected
+
+
+    def test_amend_task_get_user_input_returns_expected(self, monkeypatch:pytest.MonkeyPatch, test_task_instance:Task, str_1:str, expected:str) -> None:
         """Test amend_task_get_user_input returns expected."""
-        responses = iter([str_1, str_2])
+        responses = iter([str_1])
         monkeypatch.setattr('builtins.input', lambda _: next(responses))
 
         assert test_task_instance.amend_task_get_user_input() == expected
