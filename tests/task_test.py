@@ -96,10 +96,7 @@ class TestWriteTasksToFile():
     @pytest.mark.parametrize(
             "test_data",
             [
-                {"00001": {}},
-                {"00001": {"hello": {}}, "00002": {"world": {}}},
-                {"00001": {}, "00002": {"test": "test"}, "00003": {"true": True}, "00004": {"empty_list": [], "empty_dict":{}}},
-                # {"00001" : {"username": "admin", "title": "Add functionality to task manager", "description": "Add additional options and refactor the code.", "due_date": "2024-02-18", "assigned_date": "2022-11-22", "completed": "False", "assigned_by": "admin"}}
+                {"00001" : {"username": "admin", "title": "Add functionality to task manager", "description": "Add additional options and refactor the code.", "due_date": "2024-02-18", "assigned_date": "2022-11-22", "completed": "False", "assigned_by": "admin"}}
 
             ]
     )

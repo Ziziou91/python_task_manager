@@ -39,7 +39,7 @@ class Task:
 
 
     def write_tasks_to_file(self, file_name:str, data:dict) -> str:
-        """Ensures that file_name and data are correct before writing to file."""
+        """Ensures that file_name and data are valid before writing to file."""
         # Check if file_name is valid path to file that already exists
         if not path.isfile(file_name):
             return f"ERROR! - '{file_name}' is not a valid path."
@@ -49,31 +49,33 @@ class Task:
         # Check if data doesn't include "00001" - func will only ever be called when there is something to write,
         # and task_id's are assigned numerically, so follows there should always be a task with id "00001".
         elif "00001" not in data:
-            print("ERROR! - missing data.")
             return f"ERROR! - missing data. task '00001' could not be found. Provided data is below\n{data}."
-        
+
         else:
-            ## Check that the newest task in data has all expected properties. As tasks are added 1 at a time,
-            ## sufficent to only check most recent is correct on each call to write_tasks_to_file.
-            #
-            ## Get the most recent (greatest) task_id.
-            #task_id_list = [int(task_id) for task_id in data.keys()]
-            #new_task_id = str(max(task_id_list))
-            #leading_zero_len = 5 - len(new_task_id)
-            #new_task_id = f"{(("0" * leading_zero_len) + new_task_id)}"
-            #
-            ## Check that most recent task has all required properties.
-            #required_properties = ["username", "title", "description", "due_date", "assigned_date", "completed", "assigned_up"]
-            #print("new_task_id", new_task_id)
-            #prop_count = 0
-            #for prop in data[new_task_id]:
-            #    prop_count += 1
-            #    if prop not in required_properties:
-            #        return f"ERROR! property {prop} in task {new_task_id} is not valid."
-            #if prop_count != len(required_properties):
-            #    return f"ERROR! Task {new_task_id} does not have correct number of properties."
-#
-            #else:
+            # Check that the newest task in data has all expected properties. As tasks are added 1 at a time,
+            # sufficent to only check most recent is correct on each call to write_tasks_to_file.
+
+            # Get the most recent (greatest) task_id.
+            task_id_list = [int(task_id) for task_id in data.keys()]
+            new_task_id = str(max(task_id_list))
+            leading_zero_len = 5 - len(new_task_id)
+            new_task_id = f"{(("0" * leading_zero_len) + new_task_id)}"
+
+            # Check that most recent task has all required properties.
+            required_properties = ["username", "title", "description", "due_date", "assigned_date", "completed", "assigned_by"]
+            print("new_task_id", new_task_id)
+            prop_count = 0
+            for prop in data[new_task_id]:
+                prop_count += 1
+                if prop not in required_properties:
+                    return f"ERROR! property {prop} in task {new_task_id} is not valid."
+
+            # Check number of properties in most recent task matches 'required_properties' length.
+            if prop_count != len(required_properties):
+                return f"ERROR! Task {new_task_id} does not have correct number of properties."
+
+            # If all previous checks satisfied write to 'file_name'.
+            else:
                 write_json(file_name, data)
                 return f"data successfully written to {file_name}"
 
