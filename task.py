@@ -17,6 +17,19 @@ class Task:
 
     completed = False
 
+    def amend_task(self):
+        # Needs menu logic
+        # go about using input() like you normally would:
+        i = input("What is your name?")
+        return i 
+        # Take property and data arguments
+        # check type of data is correct
+        # route accordingly - call: 
+        # create_due_date
+        # Update username 
+        # - call method on associated user object to add the task
+        # - "                                   " to remove the task
+        pass
 
     def create_due_date(self, due_date_str) -> date:
         """takes a due_date_str (format 'YYYY-MM-DD') and returns a date object"""
@@ -78,6 +91,7 @@ class Task:
             else:
                 write_json(file_name, data)
                 return f"data successfully written to {file_name}"
+
 
     def print_this_task(self):
         print(f"due date\t{self.due_date}\ttype\t{type(self.due_date)}")

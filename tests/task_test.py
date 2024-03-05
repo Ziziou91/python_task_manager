@@ -42,6 +42,15 @@ class TestTaskInstanceAttributes:
         test_attr = getattr(test_task_instance, task_attr)
         assert test_attr == expected
 
+# ===========Test amend_task============
+def test_something_that_involves_user_input(monkeypatch:pytest.MonkeyPatch, test_task_instance:Task) -> None:
+
+    # monkeypatch the "input" function, so that it returns "Mark".
+    # This simulates the user entering "Mark" in the terminal:
+    monkeypatch.setattr('builtins.input', lambda _: "Mark")
+
+    assert test_task_instance.amend_task() == "Mark" 
+
 # ===========Test create_due_date============
 def test_create_due_date_returns_date_object(test_task_instance:Task) -> None:
     """Ensure that create_due_date returns a date object."""
@@ -74,9 +83,8 @@ class TestCreateTaskIdHandlesLargerTasksDict(TestCreateTaskId):
         assert test_task_instance.create_task_id(self.TASKS) == "00005"
 
 # ===========Test write_tasks_to_file============
-
 @pytest.fixture(name="create_file")
-def fixture_create_file(request, tmp_path) -> PathLike:
+def fixture_create_file(request:list, tmp_path) -> PathLike:
     """Create temp_file for write_tasks_to_file tests in subclasses."""
     temp_dir = tmp_path / "sub"
     temp_dir.mkdir()
@@ -88,7 +96,7 @@ def fixture_create_file(request, tmp_path) -> PathLike:
 @pytest.mark.parametrize("create_file", ["output.json"], indirect=True)
 class TestWriteTasksToFile():
     """Class to test write_tasks_to_file with provided fixture"""
-    def test_create_file(self, create_file):
+    def test_create_file(self, create_file:PathLike) -> None:
         """Test 'create_file' fixture correctly creates a file at the provided path."""
         assert isinstance(create_file, PathLike)
         assert create_file.is_file()
@@ -102,7 +110,7 @@ class TestWriteTasksToFile():
     )
     class TestWriteTasksToFileHappyPath:
         """Tests that data can be written to file and then successfully loaded, as well as function returns expected response."""
-        def test_write_task_to_file_stores_data(self, create_file, test_task_instance, test_data):
+        def test_write_task_to_file_stores_data(self, create_file:PathLike, test_task_instance:Task, test_data:dict) -> None:
             """Write data to the file location initialised by 'create_file' and test data can be loaded."""
             # Write the test_data to temp_file
             test_task_instance.write_tasks_to_file(create_file, test_data)
@@ -114,16 +122,16 @@ class TestWriteTasksToFile():
         
             assert data == test_data
 
-        def test_write_task_to_file_returns_success_str(self, create_file, test_task_instance, test_data):
+        def test_write_task_to_file_returns_success_str(self, create_file:PathLike, test_task_instance:Task, test_data:dict) -> None:
             """Write data to the file location initialised by 'create_file' and data can be loaded."""
-            assert test_task_instance.write_tasks_to_file(create_file, test_data) == f"data successfully written to {create_file}"         
+            assert test_task_instance.write_tasks_to_file(create_file, test_data) == f"data successfully written to {create_file}"
 
     class TestWriteTasksToFileErrors:
         """Test that write_task_to_file returns expected error strings."""
-        def test_write_task_to_file_invalid_path_error(self, create_file, test_task_instance):
+        def test_write_task_to_file_invalid_path_error(self, create_file:PathLike, test_task_instance:Task) -> None:
             """Test write_task_to_file returns an error string when the provided file_name string is invalid."""
             invalid_path = "wrong_path"
-            assert test_task_instance.write_tasks_to_file(invalid_path, {"00001": {}}) == f"ERROR! - '{invalid_path}' is not a valid path."         
+            assert test_task_instance.write_tasks_to_file(invalid_path, {"00001": {}}) == f"ERROR! - '{invalid_path}' is not a valid path."
 
         @pytest.mark.parametrize(
             ("data", "expected"),
@@ -135,7 +143,7 @@ class TestWriteTasksToFile():
 
             ]
         )
-        def test_write_task_to_file_empty_data_error(self, create_file, test_task_instance, data, expected):
+        def test_write_task_to_file_empty_data_error(self, create_file:PathLike, test_task_instance:Task, data:any, expected:str) -> None:
             """Test write_task_to_file returns an error when data is empty"""
             assert test_task_instance.write_tasks_to_file(create_file, data) == expected
 
@@ -144,15 +152,3 @@ class TestWriteTasksToFile():
             data = {"why is there no task 0001?" : "I don't know"}
             expected = f"ERROR! - missing data. task '00001' could not be found. Provided data is below\n{data}."
             assert test_task_instance.write_tasks_to_file(create_file, data) == expected
-
-        
-
-        # f"ERROR! - missing data. task '00001' could not be found. Provided data is below\n{data}."
-
-    # TODO - Tests to run:
-    # 5) "                     " when the data doesn't have expected properties.       
-             
-# # What happens when data is empty, or not what the function expects?
-# # def test_write_tasks_to_file_handles_invalid_path(test_task_instance:Task) -> None:
-# #     """Test write_tasks_to_file returns an error message when given an invalid file path."""
-#     assert test_task_instance.write_tasks_to_file("invalid_path", {"00001": {}}) == "ERROR!"
