@@ -76,7 +76,8 @@ class Task:
 
         # return as dict e.g. {"property" : "title", "data": "Complete app"}
 
-        return f"success {menu}"
+
+        return {"property": menu, "data": new_data}
 
     def create_due_date(self, due_date_str) -> date:
         """takes a due_date_str (format 'YYYY-MM-DD') and returns a date object"""

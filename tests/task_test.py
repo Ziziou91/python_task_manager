@@ -57,21 +57,21 @@ def fixture_users() -> dict:
 @pytest.mark.parametrize(
     ("str_1", "str_2", "expected"),
     [
-        ("m", "test", "success m"),
-        ("t", "test", "success t"),
-        ("d", "test", "success d"),
-        ("u", "john", "success u"),
-        ("a", "2024-07-22", "success a")
+        ("m", True, {"property": "m", "data": True}),
+        ("t", "test", {"property": "t", "data": "test"}),
+        ("d", "test", {"property": "d", "data": "test"}),
+        ("u", "john", {"property": "u", "data": "john"}),
+        ("a", "2024-07-22", {"property": "a", "data": date(2024, 7, 22)})
     ]
 )
 class TestAmendTaskGetUserInputHappyPath():
     """Test amend_task_get_user_input happy path."""
-    def test_amend_task_get_user_input_returns_string(self, monkeypatch:pytest.MonkeyPatch, test_task_instance:Task, users:dict, str_1:str, str_2:str, expected:str) -> None:
-        """Test amend_task_get_user_input returns a string."""
+    def test_amend_task_get_user_input_returns_dictionary(self, monkeypatch:pytest.MonkeyPatch, test_task_instance:Task, users:dict, str_1:str, str_2:str, expected:str) -> None:
+        """Test amend_task_get_user_input returns a dictionary."""
         responses = iter(["u", "john"])
         monkeypatch.setattr('builtins.input', lambda _: next(responses))
 
-        assert isinstance(test_task_instance.amend_task_get_user_input(users), str)
+        assert isinstance(test_task_instance.amend_task_get_user_input(users), dict)
 
 
     def test_amend_task_get_user_input_returns_expected(self, monkeypatch:pytest.MonkeyPatch, test_task_instance:Task, users:dict, str_1:str, str_2:str, expected:str) -> None:
@@ -86,7 +86,7 @@ class TestAmendTaskGetUserInputHandlesIncorrectMenuInputs(TestAmendTaskGetUserIn
 
     def test_amend_task_get_user_input_handles_uppercase_menu_input(self, monkeypatch:pytest.MonkeyPatch, test_task_instance:Task, users:dict, str_1:str, str_2:str, expected:str) -> None:
         """Test amend_task_get_user_input handles upper-case 'menu' inputs."""
-        responses = iter([str_1, str_2])
+        responses = iter([str_1.upper(), str_2])
         monkeypatch.setattr('builtins.input', lambda _: next(responses))
 
         assert test_task_instance.amend_task_get_user_input(users) == expected
@@ -100,12 +100,20 @@ class TestAmendTaskGetUserInputHandlesIncorrectMenuInputs(TestAmendTaskGetUserIn
         assert test_task_instance.amend_task_get_user_input(users) == expected
 
 def test_amend_task_get_user_input_handles_incorrect_username(monkeypatch:pytest.MonkeyPatch, test_task_instance:Task, users:dict) -> None:
-    """Test amend_task_get_user_input handles an incorrect 'menu' input, 
+    """Test amend_task_get_user_input handles an incorrect 'username' input, 
     asking again until correct."""
     responses = iter(["u", "Jane", "Atul", "john"])
     monkeypatch.setattr('builtins.input', lambda _: next(responses))
 
-    assert test_task_instance.amend_task_get_user_input(users) == "success u"
+    assert test_task_instance.amend_task_get_user_input(users) == {'data': 'john', 'property': 'u'}
+
+def test_amend_task_get_user_input_handles_incorrect_datestring(monkeypatch:pytest.MonkeyPatch, test_task_instance:Task, users:dict) -> None:
+    """Test amend_task_get_user_input handles an incorrect date string input, 
+    asking again until correct."""
+    responses = iter(["a", "24-8-40", "incorrect", "2024-07-12"])
+    monkeypatch.setattr('builtins.input', lambda _: next(responses))
+
+    assert test_task_instance.amend_task_get_user_input(users) == {'data': date(2024, 7, 12), 'property': 'a'}
 
 
 # ===========Test create_due_date============
