@@ -57,9 +57,9 @@ class Task:
                 menu = input("Please select what you would like to edit: ")
         print(f"\n{valid_inputs[menu]}")
         new_data = input("\nPlease enter new value: ")
-        
+
         # =====new_data validation and formatting.=====
-        # username validation - check user (new_data) is in user.
+        # Username validation - check user (new_data) is in user.
         if menu == "u":
             while True:
                 if new_data not in users:
@@ -67,21 +67,28 @@ class Task:
                     new_data = input("\nPlease enter a valid username.")
                 else:
                     break
-        # due date validation
+        # Due date validation.
         elif menu == "a":
-            pass
+            new_data = self.create_due_date(new_data)
+        # Completed logic - flip bool
+        elif menu == "m":
+            new_data = not self.completed
 
-        # Ask follow-up questions specific to each type of edit, get input and validate and required.
-        # types of input - date, string, user 
-
-        
-        # Format and validate new data
         # return as dict e.g. {"property" : "title", "data": "Complete app"}
 
         return f"success {menu}"
 
     def create_due_date(self, due_date_str) -> date:
         """takes a due_date_str (format 'YYYY-MM-DD') and returns a date object"""
+        while True:
+            try:
+                date.fromisoformat(due_date_str)
+            except ValueError:
+                print("ERROR! Incorrect format. Needs to be 'YYYY-MM-DD'.")
+                due_date_str = input("\nEnter date string: ")
+            else:
+                break
+
         due_date_list = [int(val) for val in due_date_str.split("-")]
         return date(*due_date_list)
 

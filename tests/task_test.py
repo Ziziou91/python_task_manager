@@ -61,7 +61,7 @@ def fixture_users() -> dict:
         ("t", "test", "success t"),
         ("d", "test", "success d"),
         ("u", "john", "success u"),
-        ("a", "test", "success a")
+        ("a", "2024-07-22", "success a")
     ]
 )
 class TestAmendTaskGetUserInputHappyPath():
@@ -116,6 +116,13 @@ def test_create_due_date_returns_date_object(test_task_instance:Task) -> None:
 def test_create_due_date_returns_expected(test_task_instance:Task) -> None:
     """Test that create_due_date returns expected value."""
     assert test_task_instance.create_due_date("2024-08-01") == date(2024, 8, 1)
+
+def test_create_due_date_handles_invalid_string(monkeypatch:pytest.MonkeyPatch, test_task_instance:Task) -> None:
+    """Test that create_due_date handles invalid due_date_str."""
+    responses = iter(["another test", "2024-07-01"])
+    monkeypatch.setattr('builtins.input', lambda _: next(responses))
+
+    assert test_task_instance.create_due_date("test") == date(2024, 7, 1)
 
 # ===========Test create_task_id============
 class TestCreateTaskId:
