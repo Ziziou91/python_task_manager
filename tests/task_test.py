@@ -43,8 +43,7 @@ class TestTaskInstanceAttributes:
         assert test_attr == expected
 
 
-
-# ===========Test amend_task_get_user_input============
+# ===========Test amend_task============
 @pytest.fixture(name="users")
 def fixture_users() -> dict:
     """Returns user dictionary for testing """
@@ -52,8 +51,27 @@ def fixture_users() -> dict:
         "admin": {"password": "password", "role": "admin", "tasks": ["00001", "00002", "00004"], "sign_up_date": "2020-01-01"},
         "john": {"password": "john", "role": "user", "tasks": ["00003", "00005", "00006", "00007", "00008"], "sign_up_date": "2020-01-01"},
         "Naomi": {"password": "mypassword", "role": "user", "tasks": ["00009", "00010"], "sign_up_date": "2024-02-18"}
-    }
+    }        
 
+@pytest.mark.parametrize(
+    ("str_1", "str_2", "attribute", "expected"),
+    [
+        ("m", True, "completed", True),
+        ("t", "test", "title", "test"),
+        ("d", "test description", "description", "test description"),
+        ("u", "Naomi", "username", "Naomi"),
+        ("a", "2024-07-22", "due_date", date(2024, 7, 22))
+    ]
+)
+def test_amend_task_updates_attributes(monkeypatch:pytest.MonkeyPatch, test_task_instance:Task, users, str_1:str, str_2:str|bool, attribute:str, expected:any) -> None:
+    """Tests that amend_task correctly updates task attributes."""
+    responses = iter([str_1, str_2])
+    monkeypatch.setattr('builtins.input', lambda _: next(responses))
+    test_task_instance.amend_task(users)
+    new_value = getattr(test_task_instance, attribute)
+    assert new_value == expected
+
+# ===========Test amend_task_get_user_input============
 @pytest.mark.parametrize(
     ("str_1", "str_2", "expected"),
     [

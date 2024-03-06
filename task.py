@@ -20,15 +20,9 @@ class Task:
         new_value = self.amend_task_get_user_input(users)
 
         # setattr(Person, 'age', 10)
-        # route using the 'property' key in new_value  
-        if new_value["property"] == "m":
-            pass
-        # create_due_date
-        # Update username 
-        # - call method on associated user object to add the task
-        # - "                                   " to remove the task
-        pass
-
+        setattr(self, new_value["property"], new_value["data"])
+        return new_value["property"]
+        # setattr(self, new_value["property"] )
 
     def amend_task_get_user_input(self, users:dict) -> dict:
         """Walks user through a menu or options to edit task. 
@@ -76,7 +70,6 @@ class Task:
             new_data = not self.completed
 
         task_properties = {"m": "completed", "t": "title", "d": "description", "u" : "username", "a": "due_date"}
-
         return {"property": task_properties[menu], "data": new_data}
 
     def create_due_date(self, due_date_str) -> date:
