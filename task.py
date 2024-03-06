@@ -29,7 +29,7 @@ class Task:
         pass
 
 
-    def amend_task_get_user_input(self) -> dict:
+    def amend_task_get_user_input(self, users: dict) -> dict:
         """Walks user through a menu or options to edit task. 
         Returns a dictionary with the property to change and new value."""
         # create 'completed_switch' variable to dynamically represent status of
@@ -46,14 +46,27 @@ class Task:
 \tu - Change assigned user
 \ta - Amend due date
 """).lower()
+        
         # Take user's 'menu' input, check it's valid. If not, ask again.
+        valid_inputs = {"m": f"Mark task as {completed_switch}", "t": "Edit title", "d": "Edit description", "u" : "changed assigned user - must be a valid username", "a": "amend due date - must be in format 'YYYY-MM-DD'"}
         while True:
-            valid_inputs = ["m", "t", "d", "u", "a"]
             if menu in valid_inputs:
                 break
             else:
                 print(f"ERROR! {menu} is not a valid input")
                 menu = input("Please select what you would like to edit: ")
+        print(f"\n{valid_inputs[menu]}")
+        # new_data = input("\nPlease enter new value: ")
+        
+        # =====new_data validation and formatting.=====
+        # username validation - check user (new_data) is in user, and new-date isn't the originally assigned user. 
+        if menu == "u":
+            pass
+
+        # Ask follow-up questions specific to each type of edit, get input and validate and required.
+        # types of input - date, string, user 
+
+        
         # Format and validate new data
         # return as dict e.g. {"property" : "title", "data": "Complete app"}
 

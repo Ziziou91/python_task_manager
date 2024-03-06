@@ -57,35 +57,45 @@ class TestTaskInstanceAttributes:
 )
 class TestAmendTaskGetUserInput:
     """Tests for amend_task_get_user_input."""
-    def test_amend_task_get_user_input_returns_string(self, monkeypatch:pytest.MonkeyPatch, test_task_instance:Task, str_1:str, expected:str) -> None:
+    
+    @pytest.fixture(name="users")
+    def fixture_users(self) -> dict:
+        """Returns user dictionary for testing """
+        return {
+            "admin": {"password": "password", "role": "admin", "tasks": ["00001", "00002", "00004"], "sign_up_date": "2020-01-01"},
+            "john": {"password": "john", "role": "user", "tasks": ["00003", "00005", "00006", "00007", "00008"], "sign_up_date": "2020-01-01"},
+            "Naomi": {"password": "mypassword", "role": "user", "tasks": ["00009", "00010"], "sign_up_date": "2024-02-18"}
+        }
+
+    def test_amend_task_get_user_input_returns_string(self, monkeypatch:pytest.MonkeyPatch, test_task_instance:Task, users:dict, str_1:str, expected:str) -> None:
         """Test amend_task_get_user_input returns a string."""
         responses = iter([str_1])
         monkeypatch.setattr('builtins.input', lambda _: next(responses))
 
-        assert isinstance(test_task_instance.amend_task_get_user_input(), str)
+        assert isinstance(test_task_instance.amend_task_get_user_input(users), str)
 
-    def test_amend_task_get_user_input_handles_uppercase_menu_input(self, monkeypatch:pytest.MonkeyPatch, test_task_instance:Task, str_1:str, expected:str) -> None:
+    def test_amend_task_get_user_input_handles_uppercase_menu_input(self, monkeypatch:pytest.MonkeyPatch, test_task_instance:Task, users:dict, str_1:str, expected:str) -> None:
         """Test amend_task_get_user_input handles upper-case 'menu' inputs."""
         responses = iter([str_1.upper()])
         monkeypatch.setattr('builtins.input', lambda _: next(responses))
 
-        assert test_task_instance.amend_task_get_user_input() == expected
+        assert test_task_instance.amend_task_get_user_input(users) == expected
 
-    def test_amend_task_get_user_input_handles_incorrect_initial_menu_input(self, monkeypatch:pytest.MonkeyPatch, test_task_instance:Task, str_1:str, expected:str) -> None:
+    def test_amend_task_get_user_input_handles_incorrect_initial_menu_input(self, monkeypatch:pytest.MonkeyPatch, test_task_instance:Task, users:dict, str_1:str, expected:str) -> None:
         """Test amend_task_get_user_input handles an incorrect 'menu' input, 
         asking again until correct."""
         responses = iter(["hello", "test", str_1])
         monkeypatch.setattr('builtins.input', lambda _: next(responses))
 
-        assert test_task_instance.amend_task_get_user_input() == expected
+        assert test_task_instance.amend_task_get_user_input(users) == expected
 
 
-    def test_amend_task_get_user_input_returns_expected(self, monkeypatch:pytest.MonkeyPatch, test_task_instance:Task, str_1:str, expected:str) -> None:
+    def test_amend_task_get_user_input_returns_expected(self, monkeypatch:pytest.MonkeyPatch, test_task_instance:Task, users:dict, str_1:str, expected:str) -> None:
         """Test amend_task_get_user_input returns expected."""
         responses = iter([str_1])
         monkeypatch.setattr('builtins.input', lambda _: next(responses))
 
-        assert test_task_instance.amend_task_get_user_input() == expected
+        assert test_task_instance.amend_task_get_user_input(users) == expected
 
 
 # ===========Test create_due_date============
