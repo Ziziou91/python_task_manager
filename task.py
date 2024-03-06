@@ -53,14 +53,22 @@ class Task:
             if menu in valid_inputs:
                 break
             else:
-                print(f"ERROR! {menu} is not a valid input")
+                print(f"ERROR! {menu} is not a valid input.")
                 menu = input("Please select what you would like to edit: ")
         print(f"\n{valid_inputs[menu]}")
-        # new_data = input("\nPlease enter new value: ")
+        new_data = input("\nPlease enter new value: ")
         
         # =====new_data validation and formatting.=====
-        # username validation - check user (new_data) is in user, and new-date isn't the originally assigned user. 
+        # username validation - check user (new_data) is in user.
         if menu == "u":
+            while True:
+                if new_data not in users:
+                    print(f"ERROR! {new_data} is not a user.")
+                    new_data = input("\nPlease enter a valid username.")
+                else:
+                    break
+        # due date validation
+        elif menu == "a":
             pass
 
         # Ask follow-up questions specific to each type of edit, get input and validate and required.
