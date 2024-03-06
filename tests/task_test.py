@@ -57,11 +57,11 @@ def fixture_users() -> dict:
 @pytest.mark.parametrize(
     ("str_1", "str_2", "expected"),
     [
-        ("m", True, {"property": "m", "data": True}),
-        ("t", "test", {"property": "t", "data": "test"}),
-        ("d", "test", {"property": "d", "data": "test"}),
-        ("u", "john", {"property": "u", "data": "john"}),
-        ("a", "2024-07-22", {"property": "a", "data": date(2024, 7, 22)})
+        ("m", True, {"property": "completed", "data": True}),
+        ("t", "test", {"property": "title", "data": "test"}),
+        ("d", "test", {"property": "description", "data": "test"}),
+        ("u", "john", {"property": "username", "data": "john"}),
+        ("a", "2024-07-22", {"property": "due_date", "data": date(2024, 7, 22)})
     ]
 )
 class TestAmendTaskGetUserInputHappyPath():
@@ -105,7 +105,7 @@ def test_amend_task_get_user_input_handles_incorrect_username(monkeypatch:pytest
     responses = iter(["u", "Jane", "Atul", "john"])
     monkeypatch.setattr('builtins.input', lambda _: next(responses))
 
-    assert test_task_instance.amend_task_get_user_input(users) == {'data': 'john', 'property': 'u'}
+    assert test_task_instance.amend_task_get_user_input(users) == {'data': 'john', 'property': 'username'}
 
 def test_amend_task_get_user_input_handles_incorrect_datestring(monkeypatch:pytest.MonkeyPatch, test_task_instance:Task, users:dict) -> None:
     """Test amend_task_get_user_input handles an incorrect date string input, 
@@ -113,7 +113,7 @@ def test_amend_task_get_user_input_handles_incorrect_datestring(monkeypatch:pyte
     responses = iter(["a", "24-8-40", "incorrect", "2024-07-12"])
     monkeypatch.setattr('builtins.input', lambda _: next(responses))
 
-    assert test_task_instance.amend_task_get_user_input(users) == {'data': date(2024, 7, 12), 'property': 'a'}
+    assert test_task_instance.amend_task_get_user_input(users) == {'data': date(2024, 7, 12), 'property': 'due_date'}
 
 
 # ===========Test create_due_date============

@@ -16,12 +16,13 @@ class Task:
 
     completed = False
 
-    def amend_task(self) -> None:
-        # TODO - check user is either the current task owner, or admin.
+    def amend_task(self, users:dict) -> None:
+        new_value = self.amend_task_get_user_input(users)
 
-        # Take property and data arguments
-        
-        # route accordingly - call: 
+        # setattr(Person, 'age', 10)
+        # route using the 'property' key in new_value  
+        if new_value["property"] == "m":
+            pass
         # create_due_date
         # Update username 
         # - call method on associated user object to add the task
@@ -29,11 +30,11 @@ class Task:
         pass
 
 
-    def amend_task_get_user_input(self, users: dict) -> dict:
+    def amend_task_get_user_input(self, users:dict) -> dict:
         """Walks user through a menu or options to edit task. 
         Returns a dictionary with the property to change and new value."""
-        # create 'completed_switch' variable to dynamically represent status of
-        # 'completed' in upcoming input prompt
+        # Create 'completed_switch' variable to dynamically represent status of
+        # 'completed' in upcoming input prompt.
         completed_switch = "complete"
         if  self.completed:
             completed_switch = "incomplete"
@@ -74,10 +75,9 @@ class Task:
         elif menu == "m":
             new_data = not self.completed
 
-        # return as dict e.g. {"property" : "title", "data": "Complete app"}
+        task_properties = {"m": "completed", "t": "title", "d": "description", "u" : "username", "a": "due_date"}
 
-
-        return {"property": menu, "data": new_data}
+        return {"property": task_properties[menu], "data": new_data}
 
     def create_due_date(self, due_date_str) -> date:
         """takes a due_date_str (format 'YYYY-MM-DD') and returns a date object"""
