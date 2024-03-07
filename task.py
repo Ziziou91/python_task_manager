@@ -1,7 +1,7 @@
 """Task class to contain all data and expected functionality for any task."""
 from datetime import date
 from os import path
-from utility_functions import color, write_json
+from utility_functions import color, difference_between_dates, write_json
 
 class Task:
     """Each instance will include all task details, as well functionality."""
@@ -108,6 +108,39 @@ class Task:
             # Create the desired string format (e.g. 00005) for task_id and return.
             leading_zero_len = 5 - len(new_task_id)
             return f"{(("0" * leading_zero_len) + new_task_id)}"
+
+
+    def create_task_line(self, title: str, num: int, length: int=70) -> str:
+        """Create a line of a given length that includes title and num."""
+        num_str = str(num)
+        spacing = length - (len(title) + len(num_str))
+        return f"{title + (" "*spacing) + num_str}\n"
+
+
+    def create_task_str(self, key:str, called_from: str) -> str:
+        """Builds task_str to be printed in the terminal."""    
+        # Get all required dates, including how long left until deadline.
+        current_date = date.today()
+        due_date = self.create_due_date(self.due_date)
+        days_left = difference_between_dates(current_date, due_date)
+        due_date_line = self.create_task_line(f"Due: {due_date}", days_left, 79)
+
+        # Build task_str, adding information until ready to return.
+        task_str = f"{color.bold}{self.create_task_line(self.title, key)}{color.end}"
+        task_str += f"{self.description}\n\n"
+        task_str += f"{due_date_line}\n"
+
+        # Assigned_by string only includes assigned_to if this function is called from 'view_all'.
+        # If called from 'view_mine', the fact it's assigned to the current user is implied.
+        assigned_by = f"Assigned by: {self.assigned_by}"
+        if called_from == "view_all":
+            assigned_to = f"Assigned to: {self.username}"
+            task_str += f"{self.create_task_line(assigned_by, assigned_to)}"
+        else:
+            task_str += f"{assigned_by}\n"
+        
+        task_str += f"{color.bold}Completed: {self.completed}{color.end}"
+        return task_str
 
 
     def write_tasks_to_file(self, file_name:str, tasks:dict) -> str:

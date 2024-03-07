@@ -14,7 +14,7 @@ from task import Task
 from utility_functions import color, print_line, load_json, create_task_due_date
 from draw_tasks import view_mine
 from reports import generate_task_report, generate_user_report
-from edit_task import get_task_by_id
+
 
 DATETIME_STRING_FORMAT = "%Y-%m-%d"
 
@@ -90,15 +90,15 @@ def create_tasks(file_name:str) -> dict:
     return tasks
 
 
-# def view_all(tasks: list) -> None:
-#     """Reads tasks from task.txt file and prints all tasks to the console."""
-#     print_line()
-#     print(f"{'*'*31}{color.bold}All tasks{color.end}{'*'*31}")
-#     print_line()
-#     for key, task in tasks.items():
-#         task_str = create_task_str(key, task, "view_all")
-#         print(task_str)
-#         print_line()
+def view_all(tasks: list) -> None:
+    """Reads tasks from task.txt file and prints all tasks to the console."""
+    print_line()
+    print(f"{'*'*31}{color.bold}All tasks{color.end}{'*'*31}")
+    print_line()
+    for key, task in tasks.items():
+        task_str = task.create_task_str(key, "view_all")
+        print(task_str)
+        print_line()
 
 def main() -> None:
     """Main function where app logic is run."""
@@ -145,10 +145,10 @@ def main() -> None:
             add_task(tasks, users, curr_user)
         elif menu == 'va':
             view_all(tasks)
-            get_task_by_id(tasks, users, "va", curr_user)
+            # TODO - Wait to see if user would like to edit a task
         elif menu == 'vm':
             view_mine(tasks, curr_user)
-            get_task_by_id(tasks, users, "vm", curr_user)
+            # TODO - Wait to see if user would like to edit a task
         elif menu == "gr":
             generate_user_report(tasks, users)
             generate_task_report(tasks)

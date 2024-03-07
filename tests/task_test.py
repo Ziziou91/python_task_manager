@@ -193,6 +193,15 @@ class TestCreateTaskIdHandlesLargerTasksDict(TestCreateTaskId):
         """Test that create_due_date works when given an empy dictionary."""
         assert test_task_instance.create_task_id(self.TASKS) == "00005"
 
+# ===========Test create_task_str============
+def test_create_task_str_returns_string(test_task_instance:Task) -> None:
+    """Tests create_task_str returns a string."""
+    assert isinstance(test_task_instance.create_task_str("00001", "view_all"), str)
+
+# def test_create_task_str_returns_expected_for_view_all(test_task_instance:Task) -> None:
+#     "Tests create_task_str returns expected value when called from view_all."""
+#     assert test_task_instance.create_task_str("00001", "view_all") == "hello world!"
+
 # ===========Test write_tasks_to_file============
 @pytest.fixture(name="create_file")
 def fixture_create_file(request:list, tmp_path) -> PathLike:
