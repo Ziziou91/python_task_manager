@@ -27,7 +27,8 @@ def test_Task_class_attributes(test_task_instance:Task) -> None:
             ("title", "Test Task"),
             ("description", "This is a test task"),
             ("due_date", date(2024, 8, 1)),
-            ("assigned_by", "Jane")
+            ("assigned_by", "Jane"),
+            ("completed", False)
         )
 )
 class TestTaskInstanceAttributes:
@@ -48,9 +49,9 @@ class TestTaskInstanceAttributes:
 def fixture_users() -> dict:
     """Returns user dictionary for testing """
     return {
-        "admin": {"password": "password", "role": "admin", "tasks": ["00001", "00002", "00004"], "sign_up_date": "2020-01-01"},
-        "john": {"password": "john", "role": "user", "tasks": ["00003", "00005", "00006", "00007", "00008"], "sign_up_date": "2020-01-01"},
-        "Naomi": {"password": "mypassword", "role": "user", "tasks": ["00009", "00010"], "sign_up_date": "2024-02-18"}
+        "admin": {"password": "password", "role": "admin", "tasks": ["00001", "00002", "00004"], "sign_up_date": "2020-01-01", "completed": False},
+        "john": {"password": "john", "role": "user", "tasks": ["00003", "00005", "00006", "00007", "00008"], "sign_up_date": "2020-01-01", "completed": False},
+        "Naomi": {"password": "mypassword", "role": "user", "tasks": ["00009", "00010"], "sign_up_date": "2024-02-18", "completed": False}
     }        
 
 @pytest.mark.parametrize(
