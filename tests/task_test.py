@@ -7,8 +7,8 @@ from task import Task
 
 @pytest.fixture(name="test_task_instance")
 def fixure_test_task_instance() -> Task:
-    """This fixture will only be available within the scope of TestGroup"""
-    return Task("Jane", "Test Task", "This is a test task", "Jane", "2024-08-01")
+    """Create an instance of Task to run tests on."""
+    return Task("Jane", "Test Task", "This is a test task", "Jane", "2024-08-01", False)
 
 # ============Task instance tests============
 def test_Task_creates_working_instance(test_task_instance:Task) -> None:

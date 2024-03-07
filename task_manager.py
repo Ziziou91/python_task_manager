@@ -9,6 +9,8 @@
 import json
 import re
 from datetime import datetime, date
+from task import Task
+
 from utility_functions import color, print_line, load_json, create_task_due_date
 from draw_tasks import view_all, view_mine
 from reports import generate_task_report, generate_user_report
@@ -100,6 +102,15 @@ def format_task_id(task_id: str) -> str:
     task_id_no_punc = re.sub(r"[^\w\s]", "", task_id)
     leading_zeros_num = 5 - len(task_id_no_punc)
     return f"{'0'* leading_zeros_num}{task_id_no_punc}"
+
+def create_tasks(file_name:str) -> dict:
+    tasks = {}
+    tasks_data = load_json(file_name)
+
+    for task_data in tasks_data:
+        tasks[task_data] = Task(tasks_data[task_data]["username"], tasks_data[task_data]["title"], tasks_data[task_data]["description"], tasks_data[task_data]["assigned_by"], tasks_data[task_data]["due_date"], tasks_data[task_data]["completed"])
+
+    return tasks
 
 def main() -> None:
     """Main function where app logic is run."""

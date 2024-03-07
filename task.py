@@ -6,15 +6,15 @@ from utility_functions import color, write_json
 class Task:
     """Each instance will include all task details, as well functionality."""
     # TODO - New instance of class should write task details to tasks.json on creation
-    def __init__(self, username: str, title:str, description:str, assigned_by:str, due_date_str:str) -> None:
+    def __init__(self, username: str, title:str, description:str, assigned_by:str, due_date_str:str, completed:bool) -> None:
         self.username = username
         self.title = title
         self.description = description
         self.due_date = self.create_due_date(due_date_str)
         self.assigned_date = date.today()
         self.assigned_by = assigned_by
+        self.completed = completed
 
-    completed = False
 
     def amend_task(self, users:dict) -> None:
         new_value = self.amend_task_get_user_input(users)
