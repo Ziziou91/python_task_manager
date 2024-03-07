@@ -4,7 +4,7 @@ from task_manager import create_tasks
 @pytest.fixture(name="tasks")
 def fixture_tasks() -> dict:
     """Create dictionary of tasks for testing.""" 
-    return create_tasks("tasks.json")
+    return create_tasks("tests/tasks_test.json")
 
 # ============Test create_tasks============
 def test_create_task_returns_dictionary(tasks:dict) -> None:
@@ -14,6 +14,8 @@ def test_create_task_returns_dictionary(tasks:dict) -> None:
 def test_create_task_return_dictionary_has_expected_length(tasks:dict) -> None:
     """Checks that create_tasks returns a dictionary."""
     assert len(tasks) == 10
+
+
 
 @pytest.mark.parametrize(
        ("task_property"),
