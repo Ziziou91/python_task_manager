@@ -5,24 +5,33 @@ from utility_functions import color, write_json
 
 class Task:
     """Each instance will include all task details, as well functionality."""
-    # TODO - New instance of class should write task details to tasks.json on creation
     def __init__(self, username: str, title:str, description:str, assigned_by:str, due_date_str:str, completed:bool) -> None:
         self.username = username
         self.title = title
         self.description = description
-        self.due_date = self.create_due_date(due_date_str)
-        self.assigned_date = date.today()
+        self.due_date = self.create_due_date(due_date_str).strftime("%Y-%m-%d")
+        self.assigned_date = date.today().strftime("%Y-%m-%d")
         self.assigned_by = assigned_by
         self.completed = completed
 
+    def add_task_to_tasks(self, tasks:dict) -> dict:
+        """Add this task to tasks dictionary.
+        Creates task_id by finding current max task_id in tasks and adding 1."""
+        task_id_list = [int(task_id) for task_id in tasks.keys()]
+        new_task_id = str(max(task_id_list) + 1)
+        leading_zero_len = 5 - len(new_task_id)
+        new_task_id = f"{(("0" * leading_zero_len) + new_task_id)}"
+
+        tasks[new_task_id] = self
+        return tasks
+
 
     def amend_task(self, users:dict) -> None:
+        """Gets a user input, validates and then sets coresponding attribute."""
         new_value = self.amend_task_get_user_input(users)
 
-        # setattr(Person, 'age', 10)
         setattr(self, new_value["property"], new_value["data"])
         return new_value["property"]
-        # setattr(self, new_value["property"] )
 
     def amend_task_get_user_input(self, users:dict) -> dict:
         """Walks user through a menu or options to edit task. 
@@ -101,47 +110,44 @@ class Task:
             return f"{(("0" * leading_zero_len) + new_task_id)}"
 
 
-    def write_tasks_to_file(self, file_name:str, data:dict) -> str:
-        """Ensures that file_name and data are valid before writing to file."""
+    def write_tasks_to_file(self, file_name:str, tasks:dict) -> str:
+        """Ensures that file_name and tasks are valid before writing to file."""
         # Check if file_name is valid path to file that already exists
         if not path.isfile(file_name):
             return f"ERROR! - '{file_name}' is not a valid path."
-        # Check if data is empty
-        elif not bool(data):
+        # Check if tasks is empty
+        elif not bool(tasks):
             return "ERROR! - data is empty."
-        # Check if data doesn't include "00001" - func will only ever be called when there is something to write,
+        # Check if tasks doesn't include "00001" - func will only ever be called when there is something to write,
         # and task_id's are assigned numerically, so follows there should always be a task with id "00001".
-        elif "00001" not in data:
-            return f"ERROR! - missing data. task '00001' could not be found. Provided data is below\n{data}."
+        elif "00001" not in tasks:
+            return f"ERROR! - missing data. task '00001' could not be found. Provided data is below\n{tasks}."
 
         else:
-            # Check that the newest task in data has all expected properties. As tasks are added 1 at a time,
+            # Check that the newest task in tasks has all expected properties. As tasks are added 1 at a time,
             # sufficent to only check most recent is correct on each call to write_tasks_to_file.
-
-            # Get the most recent (greatest) task_id.
-            task_id_list = [int(task_id) for task_id in data.keys()]
-            new_task_id = str(max(task_id_list))
-            leading_zero_len = 5 - len(new_task_id)
-            new_task_id = f"{(("0" * leading_zero_len) + new_task_id)}"
-
             # Check that most recent task has all required properties.
             required_properties = ["username", "title", "description", "due_date", "assigned_date", "completed", "assigned_by"]
-            print("new_task_id", new_task_id)
             prop_count = 0
-            for prop in data[new_task_id]:
-                prop_count += 1
-                if prop not in required_properties:
-                    return f"ERROR! property {prop} in task {new_task_id} is not valid."
+    
+            for prop in required_properties:
+                if hasattr(self, prop):
+                    prop_count += 1
+                else:
+                    return f"ERROR! property {prop} in task new is not valid."
 
             # Check number of properties in most recent task matches 'required_properties' length.
             if prop_count != len(required_properties):
-                return f"ERROR! Task {new_task_id} does not have correct number of properties."
+                return "ERROR! New task does not have correct number of properties."
 
-            # If all previous checks satisfied write to 'file_name'.
+            # If all previous checks satisfied create tasks_data dictionary that can be converted to JSON.
             else:
-                write_json(file_name, data)
-                return f"data successfully written to {file_name}"
+                tasks_data = {}
+                for task in tasks:
+                    tasks_data[task] = tasks[task].__dict__
 
+                write_json(file_name, tasks_data)
+                return f"tasks successfully written to {file_name}"
 
     def print_this_task(self):
         print(f"due date\t{self.due_date}\ttype\t{type(self.due_date)}")

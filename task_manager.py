@@ -12,7 +12,7 @@ from datetime import datetime, date
 from task import Task
 
 from utility_functions import color, print_line, load_json, create_task_due_date
-from draw_tasks import view_all, view_mine
+from draw_tasks import view_mine
 from reports import generate_task_report, generate_user_report
 from edit_task import get_task_by_id
 
@@ -49,17 +49,21 @@ def write_user_to_file(users: dict) -> None:
         json.dump(users, f)
     print("User successfully added.")
 
-def add_task(tasks: dict, users: dict) -> None:
+def add_task(tasks: dict, users: dict, curr_user: str) -> None:
     """Allow a user to add a new task to task.txt file."""
+    # Get all the required user inputs.
     task_username = input("Name of person assigned to task: ")
     while task_username not in users.keys():
         print(f"Error! {task_username} does not exist. Please enter a valid username")
         task_username = input("Name of person assigned to task: ")
     task_title = input("Title of Task: ")
     task_description = input("Description of Task: ")
-    due_date_time = create_task_due_date()
-    new_task = create_task(task_username, task_title, task_description, due_date_time, curr_user)
-    write_task_to_file(new_task, tasks, users)
+    due_date_time = input("Due date in the following format 'YYYY-MM-DD': ")
+    
+    # Create new task instance, add to tasks dictionary and then write data to JSON.
+    new_task = Task(task_username, task_title, task_description, curr_user, due_date_time, False)
+    tasks = new_task.add_task_to_tasks(tasks)
+    new_task.write_tasks_to_file("tasks.json", tasks)
 
 def create_task(task_username: str, task_title: str, task_description: str, due_date_time: datetime, curr_user: str) -> dict:
     """Creates task dictionary and then returns."""
@@ -75,35 +79,8 @@ def create_task(task_username: str, task_title: str, task_description: str, due_
     }
     return task
 
-def write_task_to_file(new_task:dict, tasks: dict, users: dict) -> None:
-    """Adds new_task to task_list before writing it to tasks.txt."""
-    new_id = create_task_id(tasks)
-    tasks[new_id] = new_task
-    # Write updated tasks to tasks.json
-    with open("tasks.json", "w", encoding="UTF-8") as f:
-        json.dump(tasks, f)
-    # Add task_id to user tasks list, then write new users dict to users.json
-    assigned_user = tasks[new_id]["username"]
-    users[assigned_user]["tasks"].append(new_id)
-    with open("users.json", "w", encoding="UTF-8") as f:
-        json.dump(users, f)
-    print("Task successfully added.")
-
-def create_task_id(tasks: dict) -> str:
-    """Finds highest current task_id, then creates a task_id for new task."""
-    id_list = [int(value) for value in tasks.keys()]
-    id_list_max = max(id_list)
-    new_id = str(id_list_max +1)
-    leading_zero_len = 5 - len(new_id)
-    return f"{(("0" * leading_zero_len) + new_id)}"
-
-def format_task_id(task_id: str) -> str:
-    """Takes a user inputted task_id and formats it so it can be found in tasks.json"""
-    task_id_no_punc = re.sub(r"[^\w\s]", "", task_id)
-    leading_zeros_num = 5 - len(task_id_no_punc)
-    return f"{'0'* leading_zeros_num}{task_id_no_punc}"
-
 def create_tasks(file_name:str) -> dict:
+    """Loads tasks data from JSON file and then creates a dictionary of task objects."""
     tasks = {}
     tasks_data = load_json(file_name)
 
@@ -112,11 +89,22 @@ def create_tasks(file_name:str) -> dict:
 
     return tasks
 
+
+# def view_all(tasks: list) -> None:
+#     """Reads tasks from task.txt file and prints all tasks to the console."""
+#     print_line()
+#     print(f"{'*'*31}{color.bold}All tasks{color.end}{'*'*31}")
+#     print_line()
+#     for key, task in tasks.items():
+#         task_str = create_task_str(key, task, "view_all")
+#         print(task_str)
+#         print_line()
+
 def main() -> None:
     """Main function where app logic is run."""
     #===================LOAD USERS AND TASKS===================
     users = load_json("users.json")
-    tasks = load_json("tasks.json")
+    tasks = create_tasks("tasks.json")
     
     #===================Login Section===================
     logged_in = False
@@ -136,8 +124,7 @@ def main() -> None:
     
     
     while True:
-        # presenting the menu to the user and
-        # making sure that the user input is converted to lower case.
+        # Presents menu to the user and takes input.
         print_line()
         print(f"{'*'*30}{color.bold}Main Menu{color.end}{'*'*31}")
         print_line()
@@ -151,10 +138,11 @@ def main() -> None:
     e - Exit
     : ''').lower()
     
+        # Routes input to desired logic.
         if menu == 'r':
             reg_user(users)
         elif menu == 'a':
-            add_task(tasks, users)
+            add_task(tasks, users, curr_user)
         elif menu == 'va':
             view_all(tasks)
             get_task_by_id(tasks, users, "va", curr_user)

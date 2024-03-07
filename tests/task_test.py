@@ -26,7 +26,7 @@ def test_Task_class_attributes(test_task_instance:Task) -> None:
             ("username", "Jane"),
             ("title", "Test Task"),
             ("description", "This is a test task"),
-            ("due_date", date(2024, 8, 1)),
+            ("due_date", "2024-08-01"),
             ("assigned_by", "Jane"),
             ("completed", False)
         )
@@ -43,6 +43,26 @@ class TestTaskInstanceAttributes:
         test_attr = getattr(test_task_instance, task_attr)
         assert test_attr == expected
 
+
+# ===========Test add_task_to_tasks============
+class TestAddTaskToTasks:
+    """Testing for add_task_to_tasks."""
+    def test_add_task_to_tasks_returns_dict(self, test_task_instance:Task):
+        """Test add_task_to_tasks returns a dictionary."""
+        tasks = {"00001" : Task("admin", "first task", "first task in tasks.", "admin", "2024-10-01", False)}
+        assert isinstance(test_task_instance.add_task_to_tasks(tasks), dict)
+
+    def test_add_task_to_tasks_return_value_expected_length(self, test_task_instance:Task):
+        """Test add_task_to_tasks return value is of expected length."""
+        tasks = {"00001" : Task("admin", "first task", "first task in tasks.", "admin", "2024-10-01", False)}
+        assert len(test_task_instance.add_task_to_tasks(tasks)) == 2
+
+    def test_add_task_to_tasks_returns_expected_value(self, test_task_instance:Task):
+        """Test add_task_to_tasks returns the expected value."""
+        tasks = {"00001" : Task("admin", "first task", "first task in tasks.", "admin", "2024-10-01", False)}
+        expected = tasks.copy()
+        expected["00002"] = test_task_instance
+        assert test_task_instance.add_task_to_tasks(tasks) == expected
 
 # ===========Test amend_task============
 @pytest.fixture(name="users")
@@ -195,7 +215,7 @@ class TestWriteTasksToFile():
     @pytest.mark.parametrize(
             "test_data",
             [
-                {"00001" : {"username": "admin", "title": "Add functionality to task manager", "description": "Add additional options and refactor the code.", "due_date": "2024-02-18", "assigned_date": "2022-11-22", "completed": "False", "assigned_by": "admin"}}
+                {"username": "admin", "title": "Add functionality to task manager", "description": "Add additional options and refactor the code.", "due_date": "2024-02-18", "assigned_date": date.today().strftime("%Y-%m-%d"), "completed": "False", "assigned_by": "admin"}
 
             ]
     )
@@ -204,18 +224,20 @@ class TestWriteTasksToFile():
         def test_write_task_to_file_stores_data(self, create_file:PathLike, test_task_instance:Task, test_data:dict) -> None:
             """Write data to the file location initialised by 'create_file' and test data can be loaded."""
             # Write the test_data to temp_file
-            test_task_instance.write_tasks_to_file(create_file, test_data)
+            test_task = {"00001" : Task(test_data["username"], test_data["title"], test_data["description"], test_data["assigned_by"], test_data["due_date"], test_data["completed"])}
+            test_task["00001"].write_tasks_to_file(create_file, test_task)
         
             # Open temp_file and save contents as 'data'.
             file = open(create_file, "r", encoding="UTF-8")
             with file:
                 data = json.load(file)
         
-            assert data == test_data
+            assert data == {"00001": test_data}
 
         def test_write_task_to_file_returns_success_str(self, create_file:PathLike, test_task_instance:Task, test_data:dict) -> None:
             """Write data to the file location initialised by 'create_file' and data can be loaded."""
-            assert test_task_instance.write_tasks_to_file(create_file, test_data) == f"data successfully written to {create_file}"
+            tasks = {"00001" : Task("admin", "first task", "first task in tasks.", "admin", "2024-10-01", False)}
+            assert test_task_instance.write_tasks_to_file(create_file, tasks) == f"tasks successfully written to {create_file}"
 
     class TestWriteTasksToFileErrors:
         """Test that write_task_to_file returns expected error strings."""
