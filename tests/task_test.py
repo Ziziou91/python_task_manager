@@ -234,10 +234,6 @@ def test_create_task_str_returns_string(test_task_instance:Task) -> None:
     """Tests create_task_str returns a string."""
     assert isinstance(test_task_instance.create_task_str("00001", "view_all"), str)
 
-# def test_create_task_str_returns_expected_for_view_all(test_task_instance:Task) -> None:
-#     "Tests create_task_str returns expected value when called from view_all."""
-#     assert test_task_instance.create_task_str("00001", "view_all") == "hello world!"
-
 
 # ===========Test write_tasks_to_file============
 @pytest.fixture(name="create_file")
@@ -272,12 +268,12 @@ class TestWriteTasksToFile():
             # Write the test_data to temp_file
             test_task = {"00001" : Task(test_data["username"], test_data["title"], test_data["description"], test_data["assigned_by"], test_data["due_date"], test_data["completed"], test_data["assigned_date"])}
             test_task["00001"].write_tasks_to_file(create_file, test_task)
-        
+
             # Open temp_file and save contents as 'data'.
             file = open(create_file, "r", encoding="UTF-8")
             with file:
                 data = json.load(file)
-        
+
             assert data == {"00001": test_data}
 
         def test_write_task_to_file_returns_success_str(self, create_file:PathLike, test_task_instance:Task, test_data:dict) -> None:

@@ -14,6 +14,7 @@ class Task:
         self.completed = completed
         self.assigned_date = assigned_date
 
+
     def add_task_to_tasks(self, tasks:dict) -> dict:
         """Add this task to tasks dictionary.
         Creates task_id by finding current max task_id in tasks and adding 1."""
@@ -26,12 +27,14 @@ class Task:
         return tasks
 
 
-    def amend_task(self, users:dict) -> None:
+    def amend_task(self, users:dict, file_name:str, tasks:dict) -> None:
         """Gets a user input, validates and then sets coresponding attribute."""
         new_value = self.amend_task_get_user_input(users)
 
         setattr(self, new_value["property"], new_value["data"])
+        self.write_tasks_to_file(file_name, tasks)
         return new_value["property"]
+
 
     def amend_task_get_user_input(self, users:dict) -> dict:
         """Walks user through a menu or options to edit task. 
@@ -60,26 +63,29 @@ class Task:
                 print(f"ERROR! {menu} is not a valid input.")
                 menu = input("Please select what you would like to edit: ")
         print(f"\n{valid_inputs[menu]}")
-        new_data = input("\nPlease enter new value: ")
 
-        # =====new_data validation and formatting.=====
-        # Username validation - check user (new_data) is in user.
-        if menu == "u":
-            while True:
-                if new_data not in users:
-                    print(f"ERROR! {new_data} is not a user.")
-                    new_data = input("\nPlease enter a valid username.")
-                else:
-                    break
-        # Due date validation.
-        elif menu == "a":
-            new_data = self.create_due_date(new_data)
-        # Completed logic - flip bool
-        elif menu == "m":
+        # Completed logic - flip bool. Doesn't require a new value from user so skips subsequent logic.
+        if menu == "m":
             new_data = not self.completed
+        else:
+            new_data = input("\nPlease enter new value: ")
+
+            # =====new_data validation and formatting.=====
+            # Username validation - check user (new_data) is in user.
+            if menu == "u":
+                while True:
+                    if new_data not in users:
+                        print(f"ERROR! {new_data} is not a user.")
+                        new_data = input("\nPlease enter a valid username.")
+                    else:
+                        break
+            # Due date validation.
+            elif menu == "a":
+                new_data = self.create_due_date(new_data)
 
         task_properties = {"m": "completed", "t": "title", "d": "description", "u" : "username", "a": "due_date"}
         return {"property": task_properties[menu], "data": new_data}
+
 
     def create_due_date(self, due_date_str) -> date:
         """takes a due_date_str (format 'YYYY-MM-DD') and returns a date object"""
@@ -107,9 +113,13 @@ class Task:
 
             # Create the desired string format (e.g. 00005) for task_id and return.
             leading_zero_len = 5 - len(new_task_id)
+
             return f"{(("0" * leading_zero_len) + new_task_id)}"
 
+
     def create_task_str_description(self, line_length: int=70) -> str:
+        """Formats task description for printing to terminal.
+        If string length exceeds 'line_length' add a newline at a suitable space."""
         formatted_str = ""
         remaining_str = self.description
 
@@ -118,7 +128,7 @@ class Task:
             current_line = " ".join(remaining_list[0:-1])
             remaining_str = remaining_list[-1] + remaining_str[line_length:]
             formatted_str += f"{current_line}\n"
-        
+
         formatted_str += f"{remaining_str}"
         return formatted_str
 
@@ -194,7 +204,3 @@ class Task:
 
                 write_json(file_name, tasks_data)
                 return f"tasks successfully written to {file_name}"
-
-    def print_this_task(self):
-        print(f"due date\t{self.due_date}\ttype\t{type(self.due_date)}")
-        print(f"assigned date\t{self.assigned_date}\ttype\t{type(self.assigned_date)}")

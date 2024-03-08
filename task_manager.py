@@ -90,7 +90,7 @@ def create_tasks(file_name:str) -> dict:
     return tasks
 
 
-def view_all(tasks: list) -> None:
+def view_all(tasks: list, users:dict) -> None:
     """Reads tasks from task.txt file and prints all tasks to the console."""
     print_line()
     print(f"{'*'*31}{color.bold}All tasks{color.end}{'*'*31}")
@@ -99,6 +99,16 @@ def view_all(tasks: list) -> None:
         task_str = task.create_task_str(key, "view_all")
         print(task_str)
         print_line()
+    
+    edit_char = input("if you would like to edit a task enter it's id (e.g. 00001), otherwise type anything else to return to the menu: ")
+    if edit_char in tasks:
+        # TODO - tasks.amend task
+        print(f"\n{tasks[edit_char].create_task_str(key, "view_all")}")
+        tasks[edit_char].amend_task(users, "tasks.json", tasks)
+        print(f"\n{tasks[edit_char].create_task_str(key, "view_all")}")
+
+    else:
+        pass
 
 def main() -> None:
     """Main function where app logic is run."""
@@ -144,8 +154,8 @@ def main() -> None:
         elif menu == 'a':
             add_task(tasks, users, curr_user)
         elif menu == 'va':
-            view_all(tasks)
-            # TODO - Wait to see if user would like to edit a task
+            view_all(tasks, users)
+            # TODO - change to view_tasks with argument to say if it's all or just users tasks.
         elif menu == 'vm':
             view_mine(tasks, curr_user)
             # TODO - Wait to see if user would like to edit a task
