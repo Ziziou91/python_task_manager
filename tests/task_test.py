@@ -197,12 +197,12 @@ class TestCreateTaskIdHandlesLargerTasksDict(TestCreateTaskId):
 
 # ===========Test create_task_id============
 def test_create_task_id_returns_string(test_task_instance:dict) -> None:
-    "Test create_task_id returns a string."
+    """Test create_task_id returns a string."""
     assert isinstance(test_task_instance.create_task_id({}), str)
     assert isinstance(test_task_instance.create_task_id({"00001": {}}), str)
 
 def test_create_task_id_handles_empty_tasks_dictionary(test_task_instance:dict) -> None:
-    "Test create_task_id returns '00001' when called with empty tasks dictionary."
+    """Test create_task_id returns '00001' when called with empty tasks dictionary."""
     assert test_task_instance.create_task_id({}) == "00001"
 
 @pytest.mark.parametrize(
@@ -214,8 +214,19 @@ def test_create_task_id_handles_empty_tasks_dictionary(test_task_instance:dict) 
         ]
 )
 def test_create_task_id_returns_expected(test_task_instance:dict, tasks, expected) -> None:
-    "Test create_task_id returns expected."
+    """Test create_task_id returns expected."""
     assert test_task_instance.create_task_id(tasks) == expected
+
+
+# ===========Test create_task_str_description===========
+def test_create_task_str_description_returns_str(test_task_instance:dict) -> None:
+    """Test create_task_str_description returns a string."""
+    assert isinstance(test_task_instance.create_task_str_description(), str)
+
+def test_create_task_str_returns_expected() -> None:
+    """Test create_task_str returns expected."""
+    test_task = Task("admin", "test", "This task has a really long string. The reason it is so long is so that it ensures 'create_task_str_description' adds a newline.", "admin", "2024-12-01", False, "2024-06-01")
+    assert test_task.create_task_str_description() == "This task has a really long string. The reason it is so long is so\nthat it ensures 'create_task_str_description' adds a newline."
 
 
 # ===========Test create_task_str============
@@ -226,6 +237,7 @@ def test_create_task_str_returns_string(test_task_instance:Task) -> None:
 # def test_create_task_str_returns_expected_for_view_all(test_task_instance:Task) -> None:
 #     "Tests create_task_str returns expected value when called from view_all."""
 #     assert test_task_instance.create_task_str("00001", "view_all") == "hello world!"
+
 
 # ===========Test write_tasks_to_file============
 @pytest.fixture(name="create_file")
