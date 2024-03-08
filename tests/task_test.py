@@ -194,6 +194,30 @@ class TestCreateTaskIdHandlesLargerTasksDict(TestCreateTaskId):
         """Test that create_due_date works when given an empy dictionary."""
         assert test_task_instance.create_task_id(self.TASKS) == "00005"
 
+
+# ===========Test create_task_id============
+def test_create_task_id_returns_string(test_task_instance:dict) -> None:
+    "Test create_task_id returns a string."
+    assert isinstance(test_task_instance.create_task_id({}), str)
+    assert isinstance(test_task_instance.create_task_id({"00001": {}}), str)
+
+def test_create_task_id_handles_empty_tasks_dictionary(test_task_instance:dict) -> None:
+    "Test create_task_id returns '00001' when called with empty tasks dictionary."
+    assert test_task_instance.create_task_id({}) == "00001"
+
+@pytest.mark.parametrize(
+        ("tasks", "expected"),
+        [
+            ({"00001": {}}, "00002"),
+            ({"00001": {}, "00002": {}}, "00003"),
+            ({"00001": {}, "00002": {}, "00003": {}}, "00004")
+        ]
+)
+def test_create_task_id_returns_expected(test_task_instance:dict, tasks, expected) -> None:
+    "Test create_task_id returns expected."
+    assert test_task_instance.create_task_id(tasks) == expected
+
+
 # ===========Test create_task_str============
 def test_create_task_str_returns_string(test_task_instance:Task) -> None:
     """Tests create_task_str returns a string."""

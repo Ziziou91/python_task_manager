@@ -100,11 +100,11 @@ class Task:
         """Finds highest current task_id in tasks, then creates unique task_id for current task."""
         if not tasks:
             return "00001"
-        else:    
+        else:
             task_id_list = [int(task_id) for task_id in tasks.keys()]
             max_task_id = max(task_id_list)
             new_task_id = str(max_task_id +1)
-    
+
             # Create the desired string format (e.g. 00005) for task_id and return.
             leading_zero_len = 5 - len(new_task_id)
             return f"{(("0" * leading_zero_len) + new_task_id)}"
