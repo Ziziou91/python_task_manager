@@ -59,9 +59,9 @@ def add_task(tasks: dict, users: dict, curr_user: str) -> None:
     task_title = input("Title of Task: ")
     task_description = input("Description of Task: ")
     due_date_time = input("Due date in the following format 'YYYY-MM-DD': ")
-    
+    assigned_date = date.today().strftime("%Y-%m-%d")
     # Create new task instance, add to tasks dictionary and then write data to JSON.
-    new_task = Task(task_username, task_title, task_description, curr_user, due_date_time, False)
+    new_task = Task(task_username, task_title, task_description, curr_user, due_date_time, False, assigned_date)
     tasks = new_task.add_task_to_tasks(tasks)
     new_task.write_tasks_to_file("tasks.json", tasks)
 
@@ -85,7 +85,7 @@ def create_tasks(file_name:str) -> dict:
     tasks_data = load_json(file_name)
 
     for task_data in tasks_data:
-        tasks[task_data] = Task(tasks_data[task_data]["username"], tasks_data[task_data]["title"], tasks_data[task_data]["description"], tasks_data[task_data]["assigned_by"], tasks_data[task_data]["due_date"], tasks_data[task_data]["completed"])
+        tasks[task_data] = Task(tasks_data[task_data]["username"], tasks_data[task_data]["title"], tasks_data[task_data]["description"], tasks_data[task_data]["assigned_by"], tasks_data[task_data]["due_date"], tasks_data[task_data]["completed"], tasks_data[task_data]["assigned_date"])
 
     return tasks
 

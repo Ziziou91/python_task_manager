@@ -5,14 +5,14 @@ from utility_functions import color, difference_between_dates, write_json
 
 class Task:
     """Each instance will include all task details, as well functionality."""
-    def __init__(self, username: str, title:str, description:str, assigned_by:str, due_date_str:str, completed:bool) -> None:
+    def __init__(self, username: str, title:str, description:str, assigned_by:str, due_date_str:str, completed:bool, assigned_date:str) -> None:
         self.username = username
         self.title = title
         self.description = description
-        self.due_date = self.create_due_date(due_date_str).strftime("%Y-%m-%d")
-        self.assigned_date = date.today().strftime("%Y-%m-%d")
         self.assigned_by = assigned_by
+        self.due_date = self.create_due_date(due_date_str).strftime("%Y-%m-%d")
         self.completed = completed
+        self.assigned_date = assigned_date
 
     def add_task_to_tasks(self, tasks:dict) -> dict:
         """Add this task to tasks dictionary.
@@ -109,8 +109,21 @@ class Task:
             leading_zero_len = 5 - len(new_task_id)
             return f"{(("0" * leading_zero_len) + new_task_id)}"
 
+    def create_task_str_description(self, line_length: int=70) -> str:
+        formatted_str = ""
+        remaining_str = self.description
 
-    def create_task_line(self, title: str, num: int, length: int=70) -> str:
+        while len(remaining_str) > line_length:
+            remaining_list = remaining_str[0:line_length].split(" ")
+            current_line = " ".join(remaining_list[0:-1])
+            remaining_str = remaining_list[-1] + remaining_str[line_length:]
+            formatted_str += f"{current_line}\n"
+        
+        formatted_str += f"{remaining_str}"
+        return formatted_str
+
+
+    def create_task_str_line(self, title: str, num: int, length: int=70) -> str:
         """Create a line of a given length that includes title and num."""
         num_str = str(num)
         spacing = length - (len(title) + len(num_str))
@@ -118,16 +131,16 @@ class Task:
 
 
     def create_task_str(self, key:str, called_from: str) -> str:
-        """Builds task_str to be printed in the terminal."""    
+        """Creates a task_str, building it line-by-line to be printed in the terminal."""    
         # Get all required dates, including how long left until deadline.
         current_date = date.today()
         due_date = self.create_due_date(self.due_date)
         days_left = difference_between_dates(current_date, due_date)
-        due_date_line = self.create_task_line(f"Due: {due_date}", days_left, 79)
+        due_date_line = self.create_task_str_line(f"Due: {due_date}", days_left, 79)
 
         # Build task_str, adding information until ready to return.
-        task_str = f"{color.bold}{self.create_task_line(self.title, key)}{color.end}"
-        task_str += f"{self.description}\n\n"
+        task_str = f"{color.bold}{self.create_task_str_line(self.title, key)}{color.end}"
+        task_str += f"{self.create_task_str_description()}\n\n"
         task_str += f"{due_date_line}\n"
 
         # Assigned_by string only includes assigned_to if this function is called from 'view_all'.
@@ -135,7 +148,7 @@ class Task:
         assigned_by = f"Assigned by: {self.assigned_by}"
         if called_from == "view_all":
             assigned_to = f"Assigned to: {self.username}"
-            task_str += f"{self.create_task_line(assigned_by, assigned_to)}"
+            task_str += f"{self.create_task_str_line(assigned_by, assigned_to)}"
         else:
             task_str += f"{assigned_by}\n"
         

@@ -8,7 +8,7 @@ from task import Task
 @pytest.fixture(name="test_task_instance")
 def fixure_test_task_instance() -> Task:
     """Create an instance of Task to run tests on."""
-    return Task("Jane", "Test Task", "This is a test task", "Jane", "2024-08-01", False)
+    return Task("Jane", "Test Task", "This is a test task", "Jane", "2024-08-01", False, "2024-08-01")
 
 # ============Task instance tests============
 def test_Task_creates_working_instance(test_task_instance:Task) -> None:
@@ -28,7 +28,8 @@ def test_Task_class_attributes(test_task_instance:Task) -> None:
             ("description", "This is a test task"),
             ("due_date", "2024-08-01"),
             ("assigned_by", "Jane"),
-            ("completed", False)
+            ("completed", False),
+            ("assigned_date", "2024-08-01")
         )
 )
 class TestTaskInstanceAttributes:
@@ -49,17 +50,17 @@ class TestAddTaskToTasks:
     """Testing for add_task_to_tasks."""
     def test_add_task_to_tasks_returns_dict(self, test_task_instance:Task):
         """Test add_task_to_tasks returns a dictionary."""
-        tasks = {"00001" : Task("admin", "first task", "first task in tasks.", "admin", "2024-10-01", False)}
+        tasks = {"00001" : Task("admin", "first task", "first task in tasks.", "admin", "2024-10-01", False, "2024-02-01")}
         assert isinstance(test_task_instance.add_task_to_tasks(tasks), dict)
 
     def test_add_task_to_tasks_return_value_expected_length(self, test_task_instance:Task):
         """Test add_task_to_tasks return value is of expected length."""
-        tasks = {"00001" : Task("admin", "first task", "first task in tasks.", "admin", "2024-10-01", False)}
+        tasks = {"00001" : Task("admin", "first task", "first task in tasks.", "admin", "2024-10-01", False, "2024-02-01")}
         assert len(test_task_instance.add_task_to_tasks(tasks)) == 2
 
     def test_add_task_to_tasks_returns_expected_value(self, test_task_instance:Task):
         """Test add_task_to_tasks returns the expected value."""
-        tasks = {"00001" : Task("admin", "first task", "first task in tasks.", "admin", "2024-10-01", False)}
+        tasks = {"00001" : Task("admin", "first task", "first task in tasks.", "admin", "2024-10-01", False, "2024-02-01")}
         expected = tasks.copy()
         expected["00002"] = test_task_instance
         assert test_task_instance.add_task_to_tasks(tasks) == expected
@@ -122,7 +123,7 @@ class TestAmendTaskGetUserInputHappyPath():
 
 
 class TestAmendTaskGetUserInputHandlesIncorrectMenuInputs(TestAmendTaskGetUserInputHappyPath):
-
+    "Ensure amend_task_get_user_input handles incorrect inputs, asking and checking until valid."
     def test_amend_task_get_user_input_handles_uppercase_menu_input(self, monkeypatch:pytest.MonkeyPatch, test_task_instance:Task, users:dict, str_1:str, str_2:str, expected:str) -> None:
         """Test amend_task_get_user_input handles upper-case 'menu' inputs."""
         responses = iter([str_1.upper(), str_2])
@@ -233,7 +234,7 @@ class TestWriteTasksToFile():
         def test_write_task_to_file_stores_data(self, create_file:PathLike, test_task_instance:Task, test_data:dict) -> None:
             """Write data to the file location initialised by 'create_file' and test data can be loaded."""
             # Write the test_data to temp_file
-            test_task = {"00001" : Task(test_data["username"], test_data["title"], test_data["description"], test_data["assigned_by"], test_data["due_date"], test_data["completed"])}
+            test_task = {"00001" : Task(test_data["username"], test_data["title"], test_data["description"], test_data["assigned_by"], test_data["due_date"], test_data["completed"], test_data["assigned_date"])}
             test_task["00001"].write_tasks_to_file(create_file, test_task)
         
             # Open temp_file and save contents as 'data'.
@@ -245,7 +246,7 @@ class TestWriteTasksToFile():
 
         def test_write_task_to_file_returns_success_str(self, create_file:PathLike, test_task_instance:Task, test_data:dict) -> None:
             """Write data to the file location initialised by 'create_file' and data can be loaded."""
-            tasks = {"00001" : Task("admin", "first task", "first task in tasks.", "admin", "2024-10-01", False)}
+            tasks = {"00001" : Task("admin", "first task", "first task in tasks.", "admin", "2024-10-01", False, "2024-01-01")}
             assert test_task_instance.write_tasks_to_file(create_file, tasks) == f"tasks successfully written to {create_file}"
 
     class TestWriteTasksToFileErrors:
