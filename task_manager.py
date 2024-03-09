@@ -76,7 +76,7 @@ def create_tasks(file_name:str) -> dict:
     return tasks
 
 def edit_tasks(tasks: dict, users: dict, curr_user: str, called_from: str) -> str:
-    """TODO"""
+    """Take a task_id, check it can be edited, take new value and then amend task."""
     task_id = input("if you would like to edit a task enter it's id (e.g. 00001), otherwise type anything else to return to the menu: ")
 
     # Check user input is a valid task_id.
