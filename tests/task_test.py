@@ -65,7 +65,7 @@ class TestAddTaskToTasks:
         expected["00002"] = test_task_instance
         assert test_task_instance.add_task_to_tasks(tasks) == expected
 
-# ===========Test amend_task============
+# ===========Test amend_task============   
 @pytest.fixture(name="users")
 def fixture_users() -> dict:
     """Returns user dictionary for testing """
@@ -73,7 +73,7 @@ def fixture_users() -> dict:
         "admin": {"password": "password", "role": "admin", "tasks": ["00001", "00002", "00004"], "sign_up_date": "2020-01-01", "completed": False},
         "john": {"password": "john", "role": "user", "tasks": ["00003", "00005", "00006", "00007", "00008"], "sign_up_date": "2020-01-01", "completed": False},
         "Naomi": {"password": "mypassword", "role": "user", "tasks": ["00009", "00010"], "sign_up_date": "2024-02-18", "completed": False}
-    }        
+    }
 
 @pytest.mark.parametrize(
     ("str_1", "str_2", "attribute", "expected"),
@@ -89,7 +89,7 @@ def test_amend_task_updates_attributes(monkeypatch:pytest.MonkeyPatch, test_task
     """Tests that amend_task correctly updates task attributes."""
     responses = iter([str_1, str_2])
     monkeypatch.setattr('builtins.input', lambda _: next(responses))
-    test_task_instance.amend_task(users)
+    test_task_instance.amend_task(users, "test.json", {"00001" :{}})
     new_value = getattr(test_task_instance, attribute)
     assert new_value == expected
 
@@ -258,7 +258,6 @@ class TestWriteTasksToFile():
             "test_data",
             [
                 {"username": "admin", "title": "Add functionality to task manager", "description": "Add additional options and refactor the code.", "due_date": "2024-02-18", "assigned_date": date.today().strftime("%Y-%m-%d"), "completed": "False", "assigned_by": "admin"}
-
             ]
     )
     class TestWriteTasksToFileHappyPath:

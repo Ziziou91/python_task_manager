@@ -1,5 +1,5 @@
 import pytest
-from task_manager import create_tasks
+from task_manager import create_tasks, edit_tasks
 from task import Task
 
 @pytest.fixture(name="tasks")
@@ -38,5 +38,25 @@ def test_each_task_has_expected_properties(tasks:dict, task_property:str) -> Non
     for task in tasks:
         assert hasattr(tasks[task], task_property)
 
-# ============Test add_task============
-        
+# ============Test edit_tasks============
+class TestEditTasks:
+    """Test edit_tasks."""
+
+    @pytest.fixture(name="users")
+    def fixture_users(self) -> dict:
+        """Create dictionary of users for testing.""" 
+        return {"admin": {"tasks" :["00001", "00002", "00004"]}}
+
+
+   
+    def test_edit_tasks_returns_string(self, monkeypatch:pytest.MonkeyPatch, tasks:dict, users) -> None:
+        "Test that edit_tasks returns a string."
+        responses = iter(["00001", "d", "test"])
+        monkeypatch.setattr('builtins.input', lambda _: next(responses))
+
+        assert isinstance(edit_tasks(tasks, users, "admin", "view_all"), str)
+
+class TestEditTasksViewAll(TestEditTasks):
+    def test_edit_tasks_handles_view_all(self, tasks:dict) -> None:
+        "TODO"
+        pass

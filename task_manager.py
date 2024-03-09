@@ -60,27 +60,15 @@ def add_task(tasks: dict, users: dict, curr_user: str) -> None:
     task_description = input("Description of Task: ")
     due_date_time = input("Due date in the following format 'YYYY-MM-DD': ")
     assigned_date = date.today().strftime("%Y-%m-%d")
+
     # Create new task instance, add to tasks dictionary and then write data to JSON.
     new_task = Task(task_username, task_title, task_description, curr_user, due_date_time, False, assigned_date)
     tasks = new_task.add_task_to_tasks(tasks)
     new_task.write_tasks_to_file("tasks.json", tasks)
 
-def create_task(task_username: str, task_title: str, task_description: str, due_date_time: datetime, curr_user: str) -> dict:
-    """Creates task dictionary and then returns."""
-    curr_date = date.today()
-    task = {
-    "username": task_username,
-    "title": task_title,
-    "description": task_description,
-    "due_date": due_date_time.strftime(DATETIME_STRING_FORMAT),
-    "assigned_date": curr_date.strftime(DATETIME_STRING_FORMAT),
-    "completed": False,
-    "assigned_by": curr_user,
-    }
-    return task
 
 def create_tasks(file_name:str) -> dict:
-    """Loads tasks data from JSON file and then creates a dictionary of task objects."""
+    """At startup loads tasks data from JSON file and then creates a dictionary of task objects."""
     tasks = {}
     tasks_data = load_json(file_name)
 
@@ -89,26 +77,62 @@ def create_tasks(file_name:str) -> dict:
 
     return tasks
 
+def edit_tasks(tasks: dict, users: dict, curr_user: str, called_from: str) -> str:
+    """TODO"""
+    task_id = input("if you would like to edit a task enter it's id (e.g. 00001), otherwise type anything else to return to the menu: ")
 
-def view_all(tasks: list, users:dict) -> None:
-    """Reads tasks from task.txt file and prints all tasks to the console."""
-    print_line()
-    print(f"{'*'*31}{color.bold}All tasks{color.end}{'*'*31}")
-    print_line()
-    for key, task in tasks.items():
-        task_str = task.create_task_str(key, "view_all")
-        print(task_str)
-        print_line()
-    
-    edit_char = input("if you would like to edit a task enter it's id (e.g. 00001), otherwise type anything else to return to the menu: ")
-    if edit_char in tasks:
-        # TODO - tasks.amend task
-        print(f"\n{tasks[edit_char].create_task_str(key, "view_all")}")
-        tasks[edit_char].amend_task(users, "tasks.json", tasks)
-        print(f"\n{tasks[edit_char].create_task_str(key, "view_all")}")
+    # Check user input is a valid task_id.
+    if task_id in tasks:
+        if called_from == "view_mine":
+            # If edit_tasks called from 'view_mine', user can only view and amend their tasks.
+            if task_id in users[curr_user]["tasks"]:
+                print(f"\n{tasks[task_id].create_task_str(task_id, "view_all")}")
+                tasks[task_id].amend_task(users, "tasks.json", tasks)
 
+                # Draw task after it's been amended to show user changes were successful.
+                print(f"\n{tasks[task_id].create_task_str(task_id, "view_all")}")
+                return "Task amended."
+            else:
+                print(f"\n{'='*5}ERROR! task {task_id} is not assigned to you.{'='*5}")
+                return "Error. Task is not assigned to you."
+        elif called_from == "view_all":
+            print(f"\n{tasks[task_id].create_task_str(task_id, "view_all")}")
+            tasks[task_id].amend_task(users, "tasks.json", tasks)
+
+            # Draw task after it's been amended to show user changes were successful.
+            print(f"\n{tasks[task_id].create_task_str(task_id, "view_all")}")
+            return "Task amended."
     else:
-        pass
+
+        return "Error. Provided task_id cannot be found."
+
+def view_tasks(tasks: dict, users: dict, curr_user: str, called_from: str) -> None:
+    """Reads tasks from task.txt file and prints all tasks to the console."""
+    # TODO - break logic into functions.
+    # Create menu heading. Text depends on if called_from is view_all or view_mine.
+    if called_from == "view_all":
+        heading_str = "All tasks"
+    elif called_from == "view_mine":
+        heading_str = "My tasks"
+    print_line()
+    print(f"{'*'*31}{color.bold}{heading_str}{color.end}{'*'*31}")
+    print_line()
+
+
+    for key, task in tasks.items():
+        if called_from == "view_mine":
+            # Check task is assigned to user when view_tasks is called from 'view_mine'.
+            if getattr(task, "username") == curr_user:
+                task_str = task.create_task_str(key, called_from)
+                print(task_str)
+                print_line()
+        else:
+            task_str = task.create_task_str(key, called_from)
+            print(task_str)
+            print_line()
+
+    edit_tasks(tasks, users, curr_user, called_from)
+
 
 def main() -> None:
     """Main function where app logic is run."""
@@ -154,10 +178,10 @@ def main() -> None:
         elif menu == 'a':
             add_task(tasks, users, curr_user)
         elif menu == 'va':
-            view_all(tasks, users)
+            view_tasks(tasks, users, curr_user, "view_all")
             # TODO - change to view_tasks with argument to say if it's all or just users tasks.
         elif menu == 'vm':
-            view_mine(tasks, curr_user)
+            view_tasks(tasks, users, curr_user, "view_mine")
             # TODO - Wait to see if user would like to edit a task
         elif menu == "gr":
             generate_user_report(tasks, users)
