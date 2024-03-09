@@ -34,12 +34,12 @@ def test_Task_class_attributes(test_task_instance:Task) -> None:
 )
 class TestTaskInstanceAttributes:
     """Test that the instance attributes of a Task object behave as expected."""
-    def test_Task_instance_attributes_type(self, task_attr:str, expected:str|date, test_task_instance:Task) -> None:
+    def test_Task_instance_attributes_type(self, task_attr:str, expected:str|bool, test_task_instance:Task) -> None:
         """Tests that instance attributes have correct type."""
         test_attr = getattr(test_task_instance, task_attr)
         assert isinstance(test_attr, type(expected))
 
-    def test_Task_instance_attributes_value(self, task_attr:str, expected:str|date, test_task_instance:Task) -> None:
+    def test_Task_instance_attributes_value(self, task_attr:str, expected:str|bool, test_task_instance:Task) -> None:
         """Test that instance attributes have the expected value."""
         test_attr = getattr(test_task_instance, task_attr)
         assert test_attr == expected
