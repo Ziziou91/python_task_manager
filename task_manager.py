@@ -13,39 +13,7 @@ from task import Task
 from utility_functions import color, print_line, load_json
 from reports import generate_task_report, generate_user_report
 
-
 DATETIME_STRING_FORMAT = "%Y-%m-%d"
-
-
-def reg_user(users: dict) -> None:
-    """Create a new user to write to the user.txt file"""
-    new_username = input("New Username: ")
-    while new_username in users.keys():
-        print(f"Error! {new_username} has already been registered. Please choose a different username.")
-        new_username = input("New Username: ")
-    new_password = input("New Password: ")
-    confirm_password = input("Confirm Password: ")
-    user_type = input("User type - admin or user: ")
-    while user_type != "admin" and user_type != "user":
-        print(f"Error! {user_type} is not a valid user type.")
-        user_type = input("User type - admin or user?")
-    if new_password == confirm_password:
-        print("New user added")
-        users[new_username] = {
-            "password" : new_password,
-            "role" : user_type,
-            "tasks" : [],
-            "sign_up_date" : date.today().strftime(DATETIME_STRING_FORMAT)
-        }
-        write_user_to_file(users)
-    else:
-        print("Passwords do no match")
-
-def write_user_to_file(users: dict) -> None:
-    """Write new user to user.txt file."""
-    with open("users.json", "w", encoding="UTF-8") as f:
-        json.dump(users, f)
-    print("User successfully added.")
 
 def add_task(tasks: dict, users: dict, curr_user: str) -> None:
     """Allow a user to add a new task to task.txt file."""
@@ -104,6 +72,32 @@ def edit_tasks(tasks: dict, users: dict, curr_user: str, called_from: str) -> st
 
         return "Error. Provided task_id cannot be found."
 
+
+def reg_user(users: dict) -> None:
+    """Create a new user to write to the user.txt file"""
+    new_username = input("New Username: ")
+    while new_username in users.keys():
+        print(f"Error! {new_username} has already been registered. Please choose a different username.")
+        new_username = input("New Username: ")
+    new_password = input("New Password: ")
+    confirm_password = input("Confirm Password: ")
+    user_type = input("User type - admin or user: ")
+    while user_type != "admin" and user_type != "user":
+        print(f"Error! {user_type} is not a valid user type.")
+        user_type = input("User type - admin or user?")
+    if new_password == confirm_password:
+        print("New user added")
+        users[new_username] = {
+            "password" : new_password,
+            "role" : user_type,
+            "tasks" : [],
+            "sign_up_date" : date.today().strftime(DATETIME_STRING_FORMAT)
+        }
+        write_user_to_file(users)
+    else:
+        print("Passwords do no match")
+
+
 def view_tasks(tasks: dict, users: dict, curr_user: str, called_from: str) -> None:
     """Reads tasks from task.txt file and prints all tasks to the console."""
     # TODO - break logic into functions.
@@ -130,6 +124,12 @@ def view_tasks(tasks: dict, users: dict, curr_user: str, called_from: str) -> No
             print_line()
 
     edit_tasks(tasks, users, curr_user, called_from)
+
+def write_user_to_file(users: dict) -> None:
+    """Write new user to user.txt file."""
+    with open("users.json", "w", encoding="UTF-8") as f:
+        json.dump(users, f)
+    print("User successfully added.")
 
 
 def main() -> None:
