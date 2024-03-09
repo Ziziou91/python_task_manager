@@ -11,7 +11,6 @@ from datetime import date
 from task import Task
 
 from utility_functions import color, print_line, load_json
-from draw_tasks import view_mine
 from reports import generate_task_report, generate_user_report
 
 

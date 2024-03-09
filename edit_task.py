@@ -1,7 +1,7 @@
 """Functionality to edit existing tasks in tasks.json"""
 import re
 import json
-from utility_functions import color, print_line, create_task_due_date
+from utility_functions import color, print_line
 
 DATETIME_STRING_FORMAT = "%Y-%m-%d"
 
