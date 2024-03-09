@@ -57,8 +57,7 @@ More details about pip (python package installer) can be found [here](https://py
 
 Pytest functionality has been used to mock user inputs, as well as create temporary files to test that app correctly reads and writes to file:
 - Mocking of user inputs that would usually be provided in CLI has been achieved with using [monkeypatch](https://docs.pytest.org/en/4.6.x/monkeypatch.html) to patch the builtin `input` function. Where multiple inputs are required to test nested menus, or ensure the app handles incorrect inputs, an interable is passed to `monkeypatch.setattr`.   
-- Where I've wanted to test functions that read and write files I've used the [tmp_path fixture](https://docs.pytest.org/en/7.1.x/how-to/tmp_path.html), providing a temporary directory to the test function. Using tmp_path has allowed me to paramterize functionality, isolate tests and avoid any side effects of testing. 
-
+- Where I've wanted to test functions that read and write files I've used the [tmp_path fixture](https://docs.pytest.org/en/7.1.x/how-to/tmp_path.html), providing a temporary directory to the test function. Using `tmp_path` has allowed me to paramterize functionality, isolate tests and avoid any side effects of testing. 
 
 ## Intent
 

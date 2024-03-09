@@ -4,7 +4,7 @@ from os import path
 from utility_functions import color, difference_between_dates, write_json
 
 class Task:
-    """Each instance will include all task details, as well functionality."""
+    """Creates a task instance which contains all details and functionality."""
     def __init__(self, username: str, title:str, description:str, assigned_by:str, due_date_str:str, completed:bool, assigned_date:str) -> None:
         self.username = username
         self.title = title
