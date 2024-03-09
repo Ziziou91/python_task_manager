@@ -52,15 +52,3 @@ def write_json(file_name: str, data: Any) -> None:
     """Writes data to a json file at file_name."""
     with open(file_name, "w", encoding="UTF-8") as file:
         json.dump(data, file)
-
-def create_task_due_date() -> datetime:
-    """Takes a user input and returns a datetime object."""
-    while True:
-        try:
-            task_due_date = input("Due date of task (YYYY-MM-DD): ")
-            due_date_time = datetime.strptime(task_due_date, DATETIME_STRING_FORMAT)
-            break
-    
-        except ValueError:
-            print("Invalid datetime format. Please use the format specified")
-    return due_date_time

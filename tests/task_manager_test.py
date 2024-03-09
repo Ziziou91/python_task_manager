@@ -45,10 +45,7 @@ class TestEditTasks:
     @pytest.fixture(name="users")
     def fixture_users(self) -> dict:
         """Create dictionary of users for testing.""" 
-        return {"admin": {"tasks" :["00001", "00002", "00004"]}}
-
-
-   
+        return {"admin": {"tasks" :["00001", "00002", "00004"]}}   
     def test_edit_tasks_returns_string(self, monkeypatch:pytest.MonkeyPatch, tasks:dict, users) -> None:
         "Test that edit_tasks returns a string."
         responses = iter(["00001", "d", "test"])
