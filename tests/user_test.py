@@ -7,7 +7,7 @@ from user import User
 @pytest.fixture(name="test_user_instance")
 def fixure_test_user_instance() -> User:
     """Create an instance of Task to run tests on."""
-    return User("Joy", "changeme", ["00004"], "2024-04-01")
+    return User("Joy", "changeme", ["00024"], "2024-04-01")
 
 # ============User instance tests============
 def test_User_creates_working_instance(test_user_instance:User) -> None:
@@ -19,7 +19,7 @@ def test_User_creates_working_instance(test_user_instance:User) -> None:
         [
             ("username", "Joy"),
             ("password", "changeme"),
-            ("tasks", ["00004"]),
+            ("tasks", ["00024"]),
             ("sign_up_date", "2024-04-01"),
         ]
 )
@@ -54,7 +54,7 @@ class TestWriteUsersToFile():
         assert isinstance(create_file, PathLike)
         assert create_file.is_file()
 
-    
+
     @pytest.mark.parametrize(
             "test_data",
             [
@@ -63,7 +63,7 @@ class TestWriteUsersToFile():
     )
     class TestWriteUsersToFileHappyPath:
         """Tests that data can be written to file and then successfully loaded, as well as function returns expected response."""
-        def test_write_task_to_file_stores_data(self, create_file:PathLike, test_user_instance:User, test_data:dict) -> None:
+        def test_write_users_to_file_stores_data(self, create_file:PathLike, test_data:dict) -> None:
             """Write data to the file location initialised by 'create_file' and test data can be loaded."""
             # Write the test_data to temp_file
             users = {test_data["username"] : User(test_data["username"], test_data["password"], test_data["tasks"], test_data["sign_up_date"])}
@@ -75,3 +75,8 @@ class TestWriteUsersToFile():
                 data = json.load(file)
 
             assert data == {"Lisa": test_data}
+
+        def test_write_users_to_file_returns_success_str(self, create_file:PathLike, test_data:dict) -> None:
+            """Write data to the file location initialised by 'create_file' and data can be loaded."""
+            users = {test_data["username"] : User(test_data["username"], test_data["password"], test_data["tasks"], test_data["sign_up_date"])}
+            assert users["Lisa"].write_users_to_file(create_file, users) == f"tasks successfully written to {create_file}"
