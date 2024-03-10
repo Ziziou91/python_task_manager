@@ -80,3 +80,12 @@ class TestWriteUsersToFile():
             """Write data to the file location initialised by 'create_file' and data can be loaded."""
             users = {test_data["username"] : User(test_data["username"], test_data["password"], test_data["tasks"], test_data["sign_up_date"])}
             assert users["Lisa"].write_users_to_file(create_file, users) == f"tasks successfully written to {create_file}"
+        
+    class TestWriteTasksToFileErrors:
+        """Test that write_user_to_file returns expected error strings."""
+        def test_write_task_to_file_invalid_path_error(self, create_file:PathLike, test_user_instance:User) -> None:
+            """Test write_user_to_file returns an error string when the provided file_name string is invalid."""
+            invalid_path = "wrong_path"
+            assert test_user_instance.write_users_to_file(invalid_path, {"Lisa": {}}) == f"ERROR! - '{invalid_path}' is not a valid path."
+
+        
