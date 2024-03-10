@@ -262,7 +262,7 @@ class TestWriteTasksToFile():
     )
     class TestWriteTasksToFileHappyPath:
         """Tests that data can be written to file and then successfully loaded, as well as function returns expected response."""
-        def test_write_task_to_file_stores_data(self, create_file:PathLike, test_task_instance:Task, test_data:dict) -> None:
+        def test_write_task_to_file_stores_data(self, create_file:PathLike, test_data:dict) -> None:
             """Write data to the file location initialised by 'create_file' and test data can be loaded."""
             # Write the test_data to temp_file
             test_task = {"00001" : Task(test_data["username"], test_data["title"], test_data["description"], test_data["assigned_by"], test_data["due_date"], test_data["completed"], test_data["assigned_date"])}
