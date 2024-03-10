@@ -1,8 +1,8 @@
-# Notes: 
-# 1. Use the following username and password to access the admin rights 
+# Notes:
+# 1. Use the following username and password to access the admin rights
 # username: admin
 # password: password
-# 2. Ensure you open the whole folder for this task in VS Code otherwise the 
+# 2. Ensure you open the whole folder for this task in VS Code otherwise the
 # program will look in your root directory for the text files.
 
 #=====importing libraries===========
@@ -35,6 +35,7 @@ def add_task(tasks: dict, users: dict, curr_user: str) -> None:
 
 def create_tasks(file_name:str) -> dict:
     """At startup loads tasks data from JSON file and then creates a dictionary of task objects."""
+    # TODO - make create_tasks data agonistc.
     tasks = {}
     tasks_data = load_json(file_name)
 
@@ -99,8 +100,7 @@ def reg_user(users: dict) -> None:
 
 
 def view_tasks(tasks: dict, users: dict, curr_user: str, called_from: str) -> None:
-    """Reads tasks from task.txt file and prints all tasks to the console."""
-    # TODO - break logic into functions.
+    """Reads tasks from task.txt file and prints all tasks to the console.""" 
     # Create menu heading. Text depends on if called_from is view_all or view_mine.
     if called_from == "view_all":
         heading_str = "All tasks"
@@ -186,7 +186,7 @@ def main() -> None:
             generate_task_report(tasks)
         elif menu == 'ds' and curr_user == 'admin':
             '''If the user is an admin they can display statistics about number of users
-                and tasks.'''
+            and tasks.'''
             num_users = len(users)
             num_tasks = len(tasks)
 
