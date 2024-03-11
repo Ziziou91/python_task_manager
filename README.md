@@ -43,7 +43,7 @@ Additional inputs are required to register users, add tasks and view tasks. Menu
 
 This app relies on [pytest](https://docs.pytest.org/en/stable/) for testing functionality. In the apps root directory type:
 
-    pytest
+    python -m pytest
 
 You can check if pytest is installed with:
 

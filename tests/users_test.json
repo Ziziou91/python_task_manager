@@ -1,0 +1,36 @@
+{
+    "admin": {
+        "username" : "admin",
+        "password": "password",
+        "role": "admin",
+        "tasks": [
+            "00001",
+            "00002",
+            "00004"
+        ],
+        "sign_up_date": "2020-01-01"
+    },
+    "john": {
+        "username" : "john",
+        "password": "john",
+        "role": "user",
+        "tasks": [
+            "00003",
+            "00005",
+            "00006",
+            "00007",
+            "00008"
+        ],
+        "sign_up_date": "2020-01-01"
+    },
+    "Naomi": {
+        "username" : "Naomi",
+        "password": "mypassword",
+        "role": "user",
+        "tasks": [
+            "00009",
+            "00010"
+        ],
+        "sign_up_date": "2024-02-18"
+    }
+  }

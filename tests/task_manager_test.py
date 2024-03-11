@@ -1,25 +1,38 @@
 import pytest
-from task_manager import create_tasks, edit_tasks
+from task_manager import create_data, edit_tasks
 from task import Task
+from user import User
 
 @pytest.fixture(name="tasks")
 def fixture_tasks() -> dict:
     """Create dictionary of tasks for testing.""" 
-    return create_tasks("tests/tasks_test.json")
+    return create_data("tests/tasks_test.json", "tasks")
+
+@pytest.fixture(name="users")
+def fixture_users() -> dict:
+    """Create dictionary of tasks for testing.""" 
+    return create_data("tests/users_test.json", "users")
 
 # ============Test create_tasks============
-def test_create_task_returns_dictionary(tasks:dict) -> None:
-    """Checks that create_tasks returns a dictionary."""
+def test_create_data_returns_dictionary(tasks:dict, users:dict) -> None:
+    """Checks that create_data returns a dictionary."""
     assert isinstance(tasks, dict)
+    assert isinstance(users, dict)
 
-def test_create_task_return_dictionary_has_expected_length(tasks:dict) -> None:
-    """Checks that create_tasks returns a dictionary."""
+def test_create_data_return_dictionary_has_expected_length(tasks:dict, users:dict) -> None:
+    """Checks that create_data returns a dict of of the expected length."""
     assert len(tasks) == 10
+    assert len(users) == 3
 
-def test_create_task_returns_task_instances(tasks:dict) -> None:
-    """Checks that create_tasks returns a dictionary of task instances."""
+def test_create_data_returns_task_instances(tasks:dict) -> None:
+    """Checks that create_data returns a dictionary of task instances."""
     for task in tasks:
         assert isinstance(tasks[task], Task)
+
+def test_create_data_returns_user_instances(users:dict) -> None:
+    """Checks that create_data returns a dictionary of task instances."""
+    for user in users:
+        assert isinstance(users[user], User)
 
 @pytest.mark.parametrize(
        ("task_id"),
@@ -28,6 +41,14 @@ def test_create_task_returns_task_instances(tasks:dict) -> None:
 def test_tasks_contains_expected_task_ids(tasks:dict, task_id:str) -> None:
     """Checks that task in create_tasks return value has expected properties."""
     assert task_id in tasks
+
+@pytest.mark.parametrize(
+       ("user"),
+       ["admin", "john", "Naomi"]
+)
+def test_tasks_contains_expected_user_ids(users:dict, user:str) -> None:
+    """Checks that task in create_tasks return value has expected properties."""
+    assert user in users
 
 @pytest.mark.parametrize(
        ("task_property"),

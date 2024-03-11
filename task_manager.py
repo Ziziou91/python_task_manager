@@ -9,6 +9,7 @@
 import json
 from datetime import date
 from task import Task
+from user import User
 
 from utility_functions import color, print_line, load_json
 from reports import generate_task_report, generate_user_report
@@ -33,16 +34,20 @@ def add_task(tasks: dict, users: dict, curr_user: str) -> None:
     new_task.write_tasks_to_file("tasks.json", tasks)
 
 
-def create_tasks(file_name:str) -> dict:
+def create_data(file_name:str, data_request:str) -> dict:
     """At startup loads tasks data from JSON file and then creates a dictionary of task objects."""
     # TODO - make create_tasks data agonistc.
-    tasks = {}
-    tasks_data = load_json(file_name)
+    result = {}
+    data = load_json(file_name)
 
-    for task_data in tasks_data:
-        tasks[task_data] = Task(tasks_data[task_data]["username"], tasks_data[task_data]["title"], tasks_data[task_data]["description"], tasks_data[task_data]["assigned_by"], tasks_data[task_data]["due_date"], tasks_data[task_data]["completed"], tasks_data[task_data]["assigned_date"])
+    if data_request == "tasks":
+        for task_data in data:
+            result[task_data] = Task(data[task_data]["username"], data[task_data]["title"], data[task_data]["description"], data[task_data]["assigned_by"], data[task_data]["due_date"], data[task_data]["completed"], data[task_data]["assigned_date"])
+    elif data_request == "users":
+        for user_data in data:
+            result[user_data] = User(data[user_data]["username"], data[user_data]["password"], data[user_data]["tasks"], data[user_data]["sign_up_date"])
 
-    return tasks
+    return result
 
 def edit_tasks(tasks: dict, users: dict, curr_user: str, called_from: str) -> str:
     """Take a task_id, check it can be edited, take new value and then amend task."""
@@ -136,7 +141,7 @@ def main() -> None:
     """Main function where app logic is run."""
     #===================LOAD USERS AND TASKS===================
     users = load_json("users.json")
-    tasks = create_tasks("tasks.json")
+    tasks = create_data("tasks.json")
     
     #===================Login Section===================
     logged_in = False
