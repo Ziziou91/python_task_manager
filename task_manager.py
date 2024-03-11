@@ -17,7 +17,7 @@ from reports import generate_task_report, generate_user_report
 DATETIME_STRING_FORMAT = "%Y-%m-%d"
 
 def add_task(tasks: dict, users: dict, curr_user: str) -> None:
-    """Allow a user to add a new task to task.txt file."""
+    """Allow a user to add a new task to task.json file."""
     # Get all the required user inputs.
     task_username = input("Name of person assigned to task: ")
     while task_username not in users.keys():
@@ -34,9 +34,35 @@ def add_task(tasks: dict, users: dict, curr_user: str) -> None:
     new_task.write_tasks_to_file("tasks.json", tasks)
 
 
+def add_user(users: dict) -> None:
+    """Create a new user to write to the user.json file"""
+
+    new_username = input("New Username: ")
+    # Check if provided new_username is already registered.
+    while new_username in users.keys():
+        print(f"Error! {new_username} has already been registered. Please choose a different username.")
+        new_username = input("New Username: ")
+    
+    # Get required inputs.
+    new_password = input("New Password: ")
+    confirm_password = input("Confirm Password: ")
+    # user_type = input("User type - admin or user: ")
+    # while user_type != "admin" and user_type != "user":
+    #     print(f"Error! {user_type} is not a valid user type.")
+    #     user_type = input("User type - admin or user?")
+
+    # If passwords match create new user, add to users dict and write users data to json.
+    if new_password == confirm_password:
+        new_user = User(new_username, new_password, [], date.today().strftime("%Y-%m-%d"))
+        users = new_user.add_user_to_users(users)
+        new_user.write_users_to_file("users.json", users)
+        print("\nNew user added!\n")
+    else:
+        print("Passwords do no match")
+
+
 def create_data(file_name:str, data_request:str) -> dict:
     """At startup loads tasks data from JSON file and then creates a dictionary of task objects."""
-    # TODO - make create_tasks data agonistc.
     result = {}
     data = load_json(file_name)
 
@@ -78,32 +104,6 @@ def edit_tasks(tasks: dict, users: dict, curr_user: str, called_from: str) -> st
 
         return "Error. Provided task_id cannot be found."
 
-
-def reg_user(users: dict) -> None:
-    """Create a new user to write to the user.txt file"""
-    new_username = input("New Username: ")
-    while new_username in users.keys():
-        print(f"Error! {new_username} has already been registered. Please choose a different username.")
-        new_username = input("New Username: ")
-    new_password = input("New Password: ")
-    confirm_password = input("Confirm Password: ")
-    user_type = input("User type - admin or user: ")
-    while user_type != "admin" and user_type != "user":
-        print(f"Error! {user_type} is not a valid user type.")
-        user_type = input("User type - admin or user?")
-    if new_password == confirm_password:
-        print("New user added")
-        users[new_username] = {
-            "password" : new_password,
-            "role" : user_type,
-            "tasks" : [],
-            "sign_up_date" : date.today().strftime(DATETIME_STRING_FORMAT)
-        }
-        write_user_to_file(users)
-    else:
-        print("Passwords do no match")
-
-
 def view_tasks(tasks: dict, users: dict, curr_user: str, called_from: str) -> None:
     """Reads tasks from task.txt file and prints all tasks to the console.""" 
     # Create menu heading. Text depends on if called_from is view_all or view_mine.
@@ -140,8 +140,8 @@ def write_user_to_file(users: dict) -> None:
 def main() -> None:
     """Main function where app logic is run."""
     #===================LOAD USERS AND TASKS===================
-    users = load_json("users.json")
-    tasks = create_data("tasks.json")
+    users = create_data("users.json", "users")
+    tasks = create_data("tasks.json", "tasks")
     
     #===================Login Section===================
     logged_in = False
@@ -152,7 +152,7 @@ def main() -> None:
         if curr_user not in users.keys():
             print("User does not exist")
             continue
-        elif users[curr_user]["password"] != curr_pass:
+        elif getattr(users[curr_user], "password") != curr_pass:
             print("Wrong password")
             continue
         else:
@@ -177,7 +177,7 @@ def main() -> None:
     
         # Routes input to desired logic.
         if menu == 'r':
-            reg_user(users)
+            add_user(users)
         elif menu == 'a':
             add_task(tasks, users, curr_user)
         elif menu == 'va':

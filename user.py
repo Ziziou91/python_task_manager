@@ -12,6 +12,10 @@ class User:
         self.tasks = tasks
         self.sign_up_date = sign_up_date
 
+    def add_user_to_users(self, users:dict) -> dict:
+        """Add this user to users dictionary."""
+        users[self.username] = self
+        return users
 
     def write_users_to_file(self, file_name, users: dict) -> None:
         """Ensures that file_name and users are valid before writing to file."""
