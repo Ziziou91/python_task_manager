@@ -1,0 +1,69 @@
+**********************************************************************
+============================user_overview=============================
+**********************************************************************
+
+Total users - 5
+
+================================admin=================================
+Total tasks: 3
+
+complete tasks: 1                                                  33%
+* Implement edit title and description functionality             00002
+
+incomplete tasks: 2                                                67%
+* Add functionality to task manager                              00001
+* test2                                                          00004
+
+overdue tasks: 2                                                   67%
+* Add functionality to task manager                              00001
+* test2                                                          00004
+
+=================================john=================================
+Total tasks: 5
+
+complete tasks: 0                                                   0%
+
+incomplete tasks: 5                                               100%
+* create task ids                                                00003
+* john's project                                                 00005
+* Let admin know adding a task works                             00006
+* john                                                           00007
+* test create_task_due_date works                                00008
+
+overdue tasks: 4                                                   80%
+* create task ids                                                00003
+* Let admin know adding a task works                             00006
+* john                                                           00007
+* test create_task_due_date works                                00008
+
+================================Naomi=================================
+Total tasks: 2
+
+complete tasks: 0                                                   0%
+
+incomplete tasks: 2                                               100%
+* Meet with stakeholders to demo task manager                    00009
+* Feedback on task manager demo                                  00010
+
+overdue tasks: 2                                                  100%
+* Meet with stakeholders to demo task manager                    00009
+* Feedback on task manager demo                                  00010
+
+==================================Jo==================================
+Total tasks: 0
+
+complete tasks: 0                                                   0%
+
+incomplete tasks: 0                                                 0%
+
+overdue tasks: 0                                                    0%
+
+=================================Asha=================================
+Total tasks: 0
+
+complete tasks: 0                                                   0%
+
+incomplete tasks: 0                                                 0%
+
+overdue tasks: 0                                                    0%
+

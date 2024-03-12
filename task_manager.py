@@ -46,11 +46,7 @@ def add_user(users: dict) -> None:
     # Get required inputs.
     new_password = input("New Password: ")
     confirm_password = input("Confirm Password: ")
-    # user_type = input("User type - admin or user: ")
-    # while user_type != "admin" and user_type != "user":
-    #     print(f"Error! {user_type} is not a valid user type.")
-    #     user_type = input("User type - admin or user?")
-
+    
     # If passwords match create new user, add to users dict and write users data to json.
     if new_password == confirm_password:
         new_user = User(new_username, new_password, [], date.today().strftime("%Y-%m-%d"))

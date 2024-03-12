@@ -27,20 +27,23 @@ def generate_task_report(tasks: dict) -> None:
 
     text = f"{str_line}\n{name_line}\n{str_line}\n\n{number_of_tasks}\n\n{completed_tasks_str}\n\n{incomplete_tasks_str}\n\n{overdue_tasks_str}"
 
-    with open("../reports/task_overview.txt", "w", encoding="UTF-8") as f:
+    with open("reports/task_overview.txt", "w", encoding="UTF-8") as f:
         f.write(text)
 
 def calculate_task_stats(tasks: dict) -> Tuple[int, int]:
     """Loop through tasks and record the total number of completed tasks."""
     current_date = date.today().strftime(DATETIME_STRING_FORMAT)
+    # Variables to count total of complete, incomplete and overdue tasks.
     completed_tasks_total = 0
     incomplete_tasks_total = 0
     overdue_tasks_total = 0
+
+    # Check if tasks are complete, incomplete or overdue. Add to count. 
     for task_id in tasks:
-        if tasks[task_id]["completed"]:
+        if getattr(tasks[task_id], "completed"):
             completed_tasks_total += 1
         else:
-            if tasks[task_id]["due_date"] < current_date:
+            if getattr(tasks[task_id], "due_date") < current_date:
                 overdue_tasks_total += 1
             incomplete_tasks_total += 1
     return completed_tasks_total, incomplete_tasks_total, overdue_tasks_total
@@ -63,13 +66,13 @@ def generate_user_report(tasks: dict, users: dict) -> None:
     total_users = f"Total users - {len(users)}"
     
     text = f"{str_line}\n{name_line}\n{str_line}\n\n{total_users}\n\n{users_str}"
-    with open("../reports/user_overview.txt", "w", encoding="UTF-8") as f:
+    with open("reports/user_overview.txt", "w", encoding="UTF-8") as f:
         f.write(text)
 
 def create_user_str(tasks: dict, users: dict, user: str) -> str:
     """Creates the data for each user. Includes their total tasks, complete, incomplete and incomplete tasks."""
-    task_list = users[user]["tasks"]
-
+    task_list = getattr(users[user], "tasks")
+    
     user_str = f"{create_title_str(user)}\nTotal tasks: {len(task_list)}\n\n"
     user_str += f"{create_user_task_str("complete", tasks, task_list)}\n"
     user_str += f"{create_user_task_str("incomplete", tasks, task_list)}\n"
@@ -87,12 +90,12 @@ def create_user_task_str(status: str, tasks: dict, task_list: list) -> str:
     task_count = 0
     for task in tasks:
         if status == "overdue":
-            if task in task_list and tasks[task]["completed"] == status_check and tasks[task]["due_date"] < current_date:
+            if (task in task_list) and (getattr(tasks[task], "completed") == status_check) and (getattr(tasks[task], "due_date") < current_date):
                 task_count += 1
-                tasks_str += f"* {create_task_line(tasks[task]["title"], task, 68)}"
-        elif task in task_list and tasks[task]["completed"] == status_check:
+                tasks_str += f"* {create_task_line(getattr(tasks[task], "title"), task, 68)}"
+        elif (task in task_list) and (getattr(tasks[task], "completed") == status_check):
             task_count += 1
-            tasks_str += f"* {create_task_line(tasks[task]["title"], task, 68)}"
+            tasks_str += f"* {create_task_line(getattr(tasks[task],"title"), task, 68)}"
     if task_count == 0:
         status_str = create_task_line(f"{status} tasks: {task_count}", "0%")
     else:
