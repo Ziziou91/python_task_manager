@@ -79,7 +79,7 @@ def edit_tasks(tasks: dict, users: dict, curr_user: str, called_from: str) -> st
     if task_id in tasks:
         if called_from == "view_mine":
             # If edit_tasks called from 'view_mine', user can only view and amend their tasks.
-            if task_id in users[curr_user]["tasks"]:
+            if task_id in getattr(users[curr_user], "tasks"):
                 print(f"\n{tasks[task_id].create_task_str(task_id, "view_all")}")
                 tasks[task_id].amend_task(users, "tasks.json", tasks)
 
@@ -178,14 +178,12 @@ def main() -> None:
             add_task(tasks, users, curr_user)
         elif menu == 'va':
             view_tasks(tasks, users, curr_user, "view_all")
-            # TODO - change to view_tasks with argument to say if it's all or just users tasks.
         elif menu == 'vm':
             view_tasks(tasks, users, curr_user, "view_mine")
-            # TODO - Wait to see if user would like to edit a task
         elif menu == "gr":
             generate_user_report(tasks, users)
             generate_task_report(tasks)
-        elif menu == 'ds' and curr_user == 'admin':
+        elif menu == 's':
             '''If the user is an admin they can display statistics about number of users
             and tasks.'''
             num_users = len(users)
@@ -197,8 +195,12 @@ def main() -> None:
             print("-----------------------------------")
 
         elif menu == 'e':
-            print('Goodbye!!!')
+            print_line()
+            print(f"{'*'*30}{color.bold}Task Manager END.{color.end}{'*'*31}")
+            print_line()
             exit()
+
+
 
         else:
             print("You have made a wrong choice, Please Try again")
