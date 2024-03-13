@@ -77,6 +77,12 @@ def edit_tasks(tasks: dict, users: dict, curr_user: str, called_from: str) -> st
 
     # Check user input is a valid task_id.
     if task_id in tasks:
+
+        # Check is task is marked as complete. If so, notify user and end execution.
+        if getattr(tasks[task_id], "completed"):
+            print(f"\n{'='*5}ERROR. Task has been marked as complete so can no longer be edited.{'='*5}\n")
+            return
+
         if called_from == "view_mine":
             # If edit_tasks called from 'view_mine', user can only view and amend their tasks.
             if task_id in getattr(users[curr_user], "tasks"):

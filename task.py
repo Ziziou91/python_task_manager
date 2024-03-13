@@ -42,13 +42,9 @@ class Task:
         Returns a dictionary with the property to change and new value."""
         # Create 'completed_switch' variable to dynamically represent status of
         # 'completed' in upcoming input prompt.
-        completed_switch = "complete"
-        if  self.completed:
-            completed_switch = "incomplete"
-        
         print(f"\n{color.bold}Edit Task.{color.end}")
         menu = input(f"""Select what you would like to edit:
-\tm - Mark task as {completed_switch}
+\tm - Mark task as complete
 \tt - Edit title
 \td - Edit description
 \tu - Change assigned user
@@ -56,7 +52,7 @@ class Task:
 """).lower()
         
         # Take user's 'menu' input, check it's valid. If not, ask again.
-        valid_inputs = {"m": f"Mark task as {completed_switch}", "t": "Edit title", "d": "Edit description", "u" : "changed assigned user - must be a valid username", "a": "amend due date - must be in format 'YYYY-MM-DD'"}
+        valid_inputs = {"m": f"Mark task as complete", "t": "Edit title", "d": "Edit description", "u" : "changed assigned user - must be a valid username", "a": "amend due date - must be in format 'YYYY-MM-DD'"}
         while True:
             if menu in valid_inputs:
                 break
