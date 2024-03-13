@@ -6,7 +6,14 @@ from utility_functions import color, difference_between_dates, write_json
 class Task:
     """Creates a task instance which contains all task details, such as description and due date,
     as well as required functionality."""
-    def __init__(self, username: str, title:str, description:str, assigned_by:str, due_date_str:str, completed:bool, assigned_date:str) -> None:
+    def __init__(self,
+                 username: str,
+                 title: str,
+                 description: str,
+                 assigned_by: str,
+                 due_date_str: str,
+                 completed: bool,
+                 assigned_date: str) -> None:
         self.username = username
         self.title = title
         self.description = description
@@ -16,7 +23,7 @@ class Task:
         self.assigned_date = assigned_date
 
 
-    def add_task_to_tasks(self, tasks:dict) -> dict:
+    def add_task_to_tasks(self, tasks: dict) -> dict:
         """Add this task to tasks dictionary.
         Creates task_id by finding current max task_id in tasks and adding 1."""
         task_id_list = [int(task_id) for task_id in tasks.keys()]
@@ -28,7 +35,7 @@ class Task:
         return tasks
 
 
-    def amend_task(self, users:dict, file_name:str, tasks:dict) -> None:
+    def amend_task(self, users: dict, file_name: str, tasks: dict) -> None:
         """Gets a user input, validates and then sets coresponding attribute."""
         new_value = self.amend_task_get_user_input(users)
 
@@ -37,22 +44,26 @@ class Task:
         return new_value["property"]
 
 
-    def amend_task_get_user_input(self, users:dict) -> dict:
+    def amend_task_get_user_input(self, users: dict) -> dict:
         """Walks user through a menu or options to edit task. 
         Returns a dictionary with the property to change and new value."""
         # Create 'completed_switch' variable to dynamically represent status of
         # 'completed' in upcoming input prompt.
         print(f"\n{color.bold}Edit Task.{color.end}")
-        menu = input(f"""Select what you would like to edit:
+        menu = input("""Select what you would like to edit:
 \tm - Mark task as complete
 \tt - Edit title
 \td - Edit description
 \tu - Change assigned user
 \ta - Amend due date
 """).lower()
-        
+
         # Take user's 'menu' input, check it's valid. If not, ask again.
-        valid_inputs = {"m": f"Mark task as complete", "t": "Edit title", "d": "Edit description", "u" : "changed assigned user - must be a valid username", "a": "amend due date - must be in format 'YYYY-MM-DD'"}
+        valid_inputs = {"m": "Mark task as complete",
+                        "t": "Edit title",
+                        "d": "Edit description",
+                        "u" : "changed assigned user - must be a valid username",
+                        "a": "amend due date - must be in format 'YYYY-MM-DD'"}
         while True:
             if menu in valid_inputs:
                 break
@@ -61,7 +72,7 @@ class Task:
                 menu = input("Please select what you would like to edit: ")
         print(f"\n{valid_inputs[menu]}")
 
-        # Completed logic - flip bool. Doesn't require a new value from user so skips subsequent logic.
+        # Completed logic - flip bool. Doesn't require a new value from user so skips.
         if menu == "m":
             new_data = not self.completed
         else:
@@ -80,11 +91,15 @@ class Task:
             elif menu == "a":
                 new_data = self.create_due_date(new_data)
 
-        task_properties = {"m": "completed", "t": "title", "d": "description", "u" : "username", "a": "due_date"}
+        task_properties = {"m": "completed",
+                           "t": "title",
+                           "d": "description",
+                           "u" : "username",
+                           "a": "due_date"}
         return {"property": task_properties[menu], "data": new_data}
 
 
-    def create_due_date(self, due_date_str) -> date:
+    def create_due_date(self, due_date_str: str) -> date:
         """takes a due_date_str (format 'YYYY-MM-DD') and returns a date object"""
         while True:
             try:
@@ -99,7 +114,7 @@ class Task:
         return date(*due_date_list)
 
 
-    def create_task_id(self, tasks:dict) -> str:
+    def create_task_id(self, tasks: dict) -> str:
         """Finds highest current task_id in tasks, then creates unique task_id for current task."""
         if not tasks:
             return "00001"
@@ -137,7 +152,7 @@ class Task:
         return f"{title + (" "*spacing) + num_str}\n"
 
 
-    def create_task_str(self, key:str, called_from: str) -> str:
+    def create_task_str(self, key: str, called_from: str) -> str:
         """Creates a task_str, building it line-by-line to be printed in the terminal."""    
         # Get all required dates, including how long left until deadline.
         current_date = date.today()
@@ -158,7 +173,7 @@ class Task:
             task_str += f"{self.create_task_str_line(assigned_by, assigned_to)}"
         else:
             task_str += f"{assigned_by}\n"
-        
+
         task_str += f"{color.bold}Completed: {self.completed}{color.end}"
         return task_str
 
@@ -171,18 +186,25 @@ class Task:
         # Check if tasks is empty
         elif not bool(tasks):
             return "ERROR! - data is empty."
-        # Check if tasks doesn't include "00001" - func will only ever be called when there is something to write,
-        # and task_id's are assigned numerically, so follows there should always be a task with id "00001".
+        # Check if tasks doesn't include "00001" - func only called when there's data to write,
+        # and task_id's are assigned numerically, so there should always be a task with id "00001".
         elif "00001" not in tasks:
-            return f"ERROR! - missing data. task '00001' could not be found. Provided data is below\n{tasks}."
+            return f"""ERROR! - missing data. task '00001' could not be found. 
+            Provided data is below\n{tasks}."""
 
         else:
-            # Check that the newest task in tasks has all expected properties. As tasks are added 1 at a time,
-            # sufficent to only check most recent is correct on each call to write_tasks_to_file.
+            # Check that the newest task in tasks has all expected properties.
+            # Sufficent to only check most recent is correct on each call to write_tasks_to_file.
             # Check that most recent task has all required properties.
-            required_properties = ["username", "title", "description", "due_date", "assigned_date", "completed", "assigned_by"]
+            required_properties = ["username",
+                                   "title",
+                                   "description",
+                                   "due_date",
+                                   "assigned_date",
+                                   "completed",
+                                   "assigned_by"]
             prop_count = 0
-    
+
             for prop in required_properties:
                 if hasattr(self, prop):
                     prop_count += 1
@@ -193,7 +215,7 @@ class Task:
             if prop_count != len(required_properties):
                 return "ERROR! New task does not have correct number of properties."
 
-            # If all previous checks satisfied create tasks_data dictionary that can be converted to JSON.
+            # If all previous checks satisfied create tasks_data dictionary.
             else:
                 tasks_data = {}
                 for task in tasks:

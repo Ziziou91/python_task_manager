@@ -12,10 +12,12 @@ class User:
         self.tasks = tasks
         self.sign_up_date = sign_up_date
 
+
     def add_user_to_users(self, users:dict) -> dict:
         """Add this user to users dictionary."""
         users[self.username] = self
         return users
+
 
     def write_users_to_file(self, file_name, users: dict) -> None:
         """Ensures that file_name and users are valid before writing to file."""
@@ -27,8 +29,8 @@ class User:
             return "ERROR! - data is empty."
 
         else:
-            # Check that the newest task in tasks has all expected properties. As tasks are added 1 at a time,
-            # sufficent to only check most recent is correct on each call to write_tasks_to_file.
+            # Check that the newest task in tasks has all expected properties.
+            # Sufficent to only check most recent is correct on each call to write_tasks_to_file.
             # Check that most recent task has all required properties.
             required_properties = ["username", "password", "tasks", "sign_up_date"]
             prop_count = 0
@@ -43,7 +45,7 @@ class User:
             if prop_count != len(required_properties):
                 return "ERROR! New task does not have correct number of properties."
 
-            # If all previous checks satisfied create users_data dictionary that can be converted to JSON.
+            # If all previous checks satisfied create users_data dictionary.
             else:
                 users_data = {}
                 for user in users:
@@ -51,4 +53,3 @@ class User:
 
                 write_json(file_name, users_data)
                 return f"tasks successfully written to {file_name}"
-

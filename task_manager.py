@@ -17,6 +17,7 @@ from reports import generate_task_report, generate_user_report
 
 DATETIME_STRING_FORMAT = "%Y-%m-%d"
 
+
 def add_task(tasks: dict, users: dict, curr_user: str) -> None:
     """Allow a user to add a new task to task.json file."""
     # Get all the required user inputs.
@@ -30,7 +31,13 @@ def add_task(tasks: dict, users: dict, curr_user: str) -> None:
     assigned_date = date.today().strftime("%Y-%m-%d")
 
     # Create new task instance, add to tasks dictionary and then write data to JSON.
-    new_task = Task(task_username, task_title, task_description, curr_user, due_date_time, False, assigned_date)
+    new_task = Task(task_username,
+                    task_title,
+                    task_description,
+                    curr_user,
+                    due_date_time,
+                    False,
+                    assigned_date)
     tasks = new_task.add_task_to_tasks(tasks)
     new_task.write_tasks_to_file("tasks.json", tasks)
 
@@ -41,13 +48,14 @@ def add_user(users: dict) -> None:
     new_username = input("New Username: ")
     # Check if provided new_username is already registered.
     while new_username in users.keys():
-        print(f"Error! {new_username} has already been registered. Please choose a different username.")
+        print(f"""Error! {new_username} has already been registered.
+              Please choose a different username.""")
         new_username = input("New Username: ")
-    
+
     # Get required inputs.
     new_password = input("New Password: ")
     confirm_password = input("Confirm Password: ")
-    
+
     # If passwords match create new user, add to users dict and write users data to json.
     if new_password == confirm_password:
         new_user = User(new_username, new_password, [], date.today().strftime("%Y-%m-%d"))
@@ -65,23 +73,34 @@ def create_data(file_name:str, data_request:str) -> dict:
 
     if data_request == "tasks":
         for task_data in data:
-            result[task_data] = Task(data[task_data]["username"], data[task_data]["title"], data[task_data]["description"], data[task_data]["assigned_by"], data[task_data]["due_date"], data[task_data]["completed"], data[task_data]["assigned_date"])
+            result[task_data] = Task(data[task_data]["username"],
+                                     data[task_data]["title"],
+                                     data[task_data]["description"],
+                                     data[task_data]["assigned_by"],
+                                     data[task_data]["due_date"],
+                                     data[task_data]["completed"],
+                                     data[task_data]["assigned_date"])
     elif data_request == "users":
         for user_data in data:
-            result[user_data] = User(data[user_data]["username"], data[user_data]["password"], data[user_data]["tasks"], data[user_data]["sign_up_date"])
+            result[user_data] = User(data[user_data]["username"],
+                                     data[user_data]["password"],
+                                     data[user_data]["tasks"],
+                                     data[user_data]["sign_up_date"])
 
     return result
 
+
 def edit_tasks(tasks: dict, users: dict, curr_user: str, called_from: str) -> str:
     """Take a task_id, check it can be edited, take new value and then amend task."""
-    task_id = input("if you would like to edit a task enter it's id (e.g. 00001), otherwise type anything else to return to the menu: ")
+    task_id = input("""if you would like to edit a task enter it's id (e.g. 00001),
+                    otherwise type anything else to return to the menu: """)
 
     # Check user input is a valid task_id.
     if task_id in tasks:
 
         # Check is task is marked as complete. If so, notify user and end execution.
         if getattr(tasks[task_id], "completed"):
-            print(f"\n{'='*5}ERROR. Task has been marked as complete so can no longer be edited.{'='*5}\n")
+            print("\nERROR. Task has been marked as complete so can no longer be edited.\n")
             return
 
         if called_from == "view_mine":
@@ -106,6 +125,7 @@ def edit_tasks(tasks: dict, users: dict, curr_user: str, called_from: str) -> st
     else:
 
         return "Error. Provided task_id cannot be found."
+
 
 def view_tasks(tasks: dict, users: dict, curr_user: str, called_from: str) -> None:
     """Reads tasks from task.txt file and prints all tasks to the console.""" 
@@ -133,6 +153,7 @@ def view_tasks(tasks: dict, users: dict, curr_user: str, called_from: str) -> No
 
     edit_tasks(tasks, users, curr_user, called_from)
 
+
 def write_user_to_file(users: dict) -> None:
     """Write new user to user.txt file."""
     with open("users.json", "w", encoding="UTF-8") as f:
@@ -145,14 +166,14 @@ def main() -> None:
     #===================LOAD USERS AND TASKS===================
     users = create_data("users.json", "users")
     tasks = create_data("tasks.json", "tasks")
-    
+
     #===================Login Section===================
     logged_in = False
     while not logged_in:
         print("LOGIN")
         curr_user = input("Username: ")
         curr_pass = input("Password: ")
-        if curr_user not in users.keys():
+        if curr_user not in users:
             print("User does not exist")
             continue
         elif getattr(users[curr_user], "password") != curr_pass:
@@ -161,8 +182,8 @@ def main() -> None:
         else:
             print("Login Successful!")
             logged_in = True
-    
-    
+
+
     while True:
         # Presents menu to the user and takes input.
         print_line()
@@ -177,7 +198,7 @@ def main() -> None:
     s - Stastics
     e - Exit
     : ''').lower()
-    
+
         # Routes input to desired logic.
         if menu == 'r':
             add_user(users)
@@ -194,13 +215,13 @@ def main() -> None:
             # Generate reports first. Ensures files exist and subsequent logic is using latest data.
             generate_user_report(tasks, users)
             generate_task_report(tasks)
-            
-            with open("reports/task_overview.txt") as file:
+
+            with open("reports/task_overview.txt", mode="w", encoding="UTF-8") as file:
                 print(file.read())
-            
+
             print("\n\n\n")
 
-            with open("reports/user_overview.txt") as file:
+            with open("reports/user_overview.txt", mode="w", encoding="UTF-8") as file:
                 print(file.read())
 
         elif menu == 'e':
@@ -214,7 +235,7 @@ def main() -> None:
         else:
             print("You have made a wrong choice, Please Try again")
 
-# ===================EXECTUION STARTS HERE===================
 
+# ===================EXECTUION STARTS HERE===================
 if __name__ == "__main__":
     main()
