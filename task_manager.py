@@ -7,6 +7,7 @@
 
 #=====importing libraries===========
 import json
+import os
 from datetime import date
 from task import Task
 from user import User
@@ -190,15 +191,17 @@ def main() -> None:
             generate_user_report(tasks, users)
             generate_task_report(tasks)
         elif menu == 's':
-            '''If the user is an admin they can display statistics about number of users
-            and tasks.'''
-            num_users = len(users)
-            num_tasks = len(tasks)
+            # Generate reports first. Ensures files exist and subsequent logic is using latest data.
+            generate_user_report(tasks, users)
+            generate_task_report(tasks)
+            
+            with open("reports/task_overview.txt") as file:
+                print(file.read())
+            
+            print("\n\n\n")
 
-            print("-----------------------------------")
-            print(f"Number of users: \t\t {num_users}")
-            print(f"Number of tasks: \t\t {num_tasks}")
-            print("-----------------------------------")
+            with open("reports/user_overview.txt") as file:
+                print(file.read())
 
         elif menu == 'e':
             print_line()

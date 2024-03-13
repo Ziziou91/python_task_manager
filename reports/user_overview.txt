@@ -5,52 +5,63 @@
 Total users - 5
 
 ================================admin=================================
-Total tasks: 3
+Number of tasks assigned: 3
+As a percentage of total tasks: 30%
 
-complete tasks: 1                                                  33%
+complete tasks: 1
+as a percentage all of complete tasks: 10%
 * Implement edit title and description functionality             00002
 
-incomplete tasks: 2                                                67%
+incomplete tasks: 2
+as a percentage all of incomplete tasks: 20%
 * Add functionality to task manager                              00001
 * test2                                                          00004
 
-overdue tasks: 2                                                   67%
+overdue tasks: 2
+as a percentage all of overdue tasks: 20%
 * Add functionality to task manager                              00001
 * test2                                                          00004
 
 =================================john=================================
-Total tasks: 5
+Number of tasks assigned: 5
+As a percentage of total tasks: 50%
 
-complete tasks: 0                                                   0%
+complete tasks: 1
+as a percentage all of complete tasks: 10%
+* john                                                           00007
 
-incomplete tasks: 5                                               100%
+incomplete tasks: 4
+as a percentage all of incomplete tasks: 40%
 * create task ids                                                00003
 * john's project                                                 00005
 * Let admin know adding a task works                             00006
-* john                                                           00007
 * test create_task_due_date works                                00008
 
-overdue tasks: 4                                                   80%
+overdue tasks: 3
+as a percentage all of overdue tasks: 30%
 * create task ids                                                00003
 * Let admin know adding a task works                             00006
-* john                                                           00007
 * test create_task_due_date works                                00008
 
 ================================Naomi=================================
-Total tasks: 2
+Number of tasks assigned: 2
+As a percentage of total tasks: 20%
 
 complete tasks: 0                                                   0%
 
-incomplete tasks: 2                                               100%
+incomplete tasks: 2
+as a percentage all of incomplete tasks: 20%
 * Meet with stakeholders to demo task manager                    00009
 * Feedback on task manager demo                                  00010
 
-overdue tasks: 2                                                  100%
+overdue tasks: 2
+as a percentage all of overdue tasks: 20%
 * Meet with stakeholders to demo task manager                    00009
 * Feedback on task manager demo                                  00010
 
 ==================================Jo==================================
-Total tasks: 0
+Number of tasks assigned: 0
+As a percentage of total tasks: 0%
 
 complete tasks: 0                                                   0%
 
@@ -59,7 +70,8 @@ incomplete tasks: 0                                                 0%
 overdue tasks: 0                                                    0%
 
 =================================Asha=================================
-Total tasks: 0
+Number of tasks assigned: 0
+As a percentage of total tasks: 0%
 
 complete tasks: 0                                                   0%
 

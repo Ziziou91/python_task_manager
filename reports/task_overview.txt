@@ -4,11 +4,11 @@
 
 TASKS TOTAL - 10
 
-Completed tasks - 1
-Percentage completed - 10.0%
+completed tasks - 2
+Percentage completed - 20.0%
 
-Incomplete tasks - 9
-Percentage completed - 90.0%
+incomplete tasks - 8
+Percentage incomplete - 80.0%
 
-Overdue tasks - 8
-Percentage completed - 80.0%
+overdue tasks - 7
+Percentage overdue - 70.0%
