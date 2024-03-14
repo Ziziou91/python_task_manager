@@ -2,7 +2,7 @@
 
 Task management system for a small business. Designed to assign and manage tasks given to a team of employees. Users can create new users, create and assign tasks, mark tasks as complete and edit all properties of incomplete tasks.
 
-Application is built with vanilla Python and uses CLI to interact with user. Recent improvements has focused on adopting OOP design pattern for tasks, users and testing - the intent behind this being to create an app that is easily maintainable and extendable. Coding best practices have been applied throughout. 
+Application is built with Python and uses CLI to interact with user. Recent improvements have focused on adopting OOP design pattern for tasks, users and testing - the intent behind this being to create an app that is easily maintainable and extendable. Coding best practices have been applied throughout. 
 
 Particular attention has been paid to testing. TDD has been utilised extensively to create and ensure functionality of the app. User inputs have been mocked, and temporary files to test functionality reliant on reading and writing files has been used extensively to provide comprehensive test coverage. More details on how this was achieved, as well as how to use the test suite, can be found below.   
 
